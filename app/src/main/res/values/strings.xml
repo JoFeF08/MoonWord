@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MoonWord</string>
+    <string name="send">SEND</string>
+    <string name="clear">CLEAR</string>
+</resources>
