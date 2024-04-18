@@ -2,4 +2,8 @@
     <string name="app_name">MoonWord</string>
     <string name="send">SEND</string>
     <string name="clear">CLEAR</string>
+    <string name="has_encertat">Has encertat:</string>
+    <string name="textviewinput">TextViewInput</string>
+    <string name="botoRestart" />
+    <string name="todo">TODO</string>
 </resources>
