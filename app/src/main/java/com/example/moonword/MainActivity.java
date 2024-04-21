@@ -24,7 +24,18 @@ public class MainActivity extends AppCompatActivity {
         Button btn =  (Button) v;
         String lletra = btn.getText().toString();
         System.out.println("D: lletra:"+lletra);
-        btn.setEnabled(!btn.isEnabled());
+        //btn.setEnabled(!btn.isEnabled());
+
+    }
+
+    public void btnClear(View v){
+        Button btn = (Button)v;
+        System.out.println("D: pulsado clear");
+    }
+
+    public void btnSend(View v){
+        Button btn = (Button)v;
+        System.out.println("D: pulsado send");
     }
 
     public void btnRandom(View v){
@@ -44,5 +55,15 @@ public class MainActivity extends AppCompatActivity {
         // Mostrar l ’ AlertDialog a la pantalla
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void btnHint(View v){
+        Button btn = (Button)v;
+        System.out.println("D: pulsado ayuda");
+    }
+
+    public void btnRestart(View v){
+        Button btn = (Button)v;
+        System.out.println("D: pulsado mezcla");
     }
 }
