@@ -407,11 +407,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/hiddenWordsConstraint"
         android:layout_width="0dp"
-        android:layout_height="321dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/ref58H"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ref15H">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

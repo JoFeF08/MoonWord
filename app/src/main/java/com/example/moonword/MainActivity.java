@@ -1,6 +1,7 @@
 package com.example.moonword;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.IntRange;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(interficie);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        crearFilaTextViews(R.id.hiddenWordsConstraint, 5);
+        crearFilaTextViews(R.id.ref15H, 5);
     }
 
     public void setLletra(View v){
@@ -33,12 +34,11 @@ public class MainActivity extends AppCompatActivity {
         //btn.setEnabled(!btn.isEnabled());
     }
 
-    public TextView[] crearFilaTextViews(int guia, int lletres){
+    public TextView[] crearFilaTextViews(@IdRes int guia, int lletres){
         ConstraintLayout layout = findViewById(R.id.hiddenWordsConstraint);
 
         TextView textViews[] = new TextView[lletres];
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(layout);
+
 
         int lastTextViewId = guia; // La primera vista debe estar debajo de la Guideline
 
@@ -46,27 +46,21 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < lletres; i++) {
             TextView textView = new TextView(this);
             textView.setId(View.generateViewId()); // Generar ID único para el TextView
+            int id = textView.getId();
+            textView.setText("HOLA: "+i);
 
-            // Configurar propiedades del TextView (puedes personalizar según necesites)
-            textView.setText("TextView " + (i + 1));
-            textView.setTextSize(16);
-
-            // Agregar TextView al ConstraintLayout
             layout.addView(textView);
 
-            // Conectar el TextView a la Guideline y configurar restricciones
-            constraintSet.connect(textView.getId(), ConstraintSet.TOP, lastTextViewId, ConstraintSet.BOTTOM, 0);
-            constraintSet.connect(textView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
-            constraintSet.connect(textView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
+            ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(layout);
+            constraintSet.constrainWidth(id, 300);
+            constraintSet.constrainHeight(id, 200);
+            constraintSet.connect(id, ConstraintSet.TOP, guia, ConstraintSet.BOTTOM, 10);
+            constraintSet.applyTo(layout);
 
-            // Aplicar restricciones al TextView
-            lastTextViewId = textView.getId();
-
-            // Agregar TextView al array de TextViews
             textViews[i] = textView;
-            System.out.println(textViews[i].getId() + " "+textViews[i].getX() + ", "+textViews[i].getY());
         }
-        constraintSet.applyTo(layout);
+
         return textViews;
     }
 
