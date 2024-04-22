@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import android.app.AlertDialog;
 import android.graphics.fonts.FontStyle;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.view.WindowManager;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(interficie);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        crearFilaTextViews(R.id.ref15H, 7);
+        crearFilaTextViews(R.id.ref15H, 15);
     }
 
     public void setLletra(View v){
@@ -45,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
 
         int lastTextViewId = -1;
 
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        final int width = 60;
+        final int offsetMargin = displayMetrics.widthPixels/2 - (width*lletres/2) - (int)layout.getX();
+        System.out.println("MARGIN :"+offsetMargin);
         // Iterar para crear y posicionar cada TextView
         for (int i = 0; i < lletres; i++) {
             TextView textView = new TextView(this);
@@ -52,20 +58,22 @@ public class MainActivity extends AppCompatActivity {
             int id = textView.getId();
             textView.setText(""+i);
             textView.setTextSize(32);
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
             layout.addView(textView);
 
             ConstraintSet constraintSet = new ConstraintSet();
             constraintSet.clone(layout);
-            constraintSet.constrainWidth(id, 60);
+            constraintSet.constrainWidth(id, width);
             constraintSet.constrainHeight(id, 120);
-            constraintSet.connect(id, ConstraintSet.TOP, guia, ConstraintSet.BOTTOM, 10);
-            if(i>=1){
-                constraintSet.connect(id, ConstraintSet.LEFT, lastTextViewId, ConstraintSet.RIGHT, 10);
-            }else{
 
+            if(i==0){
+                constraintSet.connect(id, ConstraintSet.START, layout.getId(), ConstraintSet.START, offsetMargin);
+            }else{
+                constraintSet.connect(id, ConstraintSet.START, lastTextViewId, ConstraintSet.END, 0);
             }
-            //constraintSet.centerHorizontally(id, ConstraintSet.PARENT_ID);
+
+            //constraintSet.centerVertically(id, layout.getId());
             constraintSet.applyTo(layout);
 
             textViews[i] = textView;
