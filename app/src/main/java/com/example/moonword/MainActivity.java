@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Button[] charButtons = new Button[7];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,21 +32,31 @@ public class MainActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(interficie);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
+        getCharButtons();
+
         crearFilaTextViews(R.id.ref15H, 7);
+        //test
+        System.out.println(Game.esParaulaSolucio("puresa", "apres"));
+        System.out.println(Game.esParaulaSolucio("puresa", "apresa"));
+        System.out.println(Game.esParaulaSolucio("copta", "coa"));
+        System.out.println(Game.esParaulaSolucio("saca", "casa"));
+        System.out.println(Game.esParaulaSolucio("feiner", "ene")) ;
+        System.out.println(Game.esParaulaSolucio("nado", "dona"));
+        System.out.println(Game.esParaulaSolucio("nimfa", "fama"));
+
     }
 
     public void setLletra(View v){
         Button btn =  (Button) v;
         String lletra = btn.getText().toString();
         System.out.println("D: lletra:"+lletra);
-        //btn.setEnabled(!btn.isEnabled());
+        btn.setEnabled(false);
     }
 
     public TextView[] crearFilaTextViews(@IdRes int guia, int lletres){
         ConstraintLayout layout = findViewById(R.id.hiddenWordsConstraint);
 
         TextView textViews[] = new TextView[lletres];
-
 
         int lastTextViewId = -1;
 
@@ -62,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(""+i);
             textView.setTextSize(32);
             textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            textView.setBackgroundColor(Color.parseColor("#a9d6d6"));
+            textView.setBackgroundColor(Color.parseColor("#53acac"));
             layout.addView(textView);
 
             ConstraintSet constraintSet = new ConstraintSet();
@@ -90,11 +102,17 @@ public class MainActivity extends AppCompatActivity {
     public void btnClear(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado clear");
+        for(Button b:charButtons){
+            b.setEnabled(true);
+        }
     }
 
     public void btnSend(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado send");
+        for(Button b:charButtons){
+            b.setEnabled(true);
+        }
     }
 
     public void btnRandom(View v){
@@ -124,5 +142,15 @@ public class MainActivity extends AppCompatActivity {
     public void btnRestart(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado mezcla");
+    }
+
+    private void getCharButtons(){
+        ConstraintLayout layout = findViewById(R.id.layButLletres);
+        int j=0;
+        for(int i=0;i<layout.getChildCount();i++){
+            if(layout.getChildAt(i) instanceof Button){
+                charButtons[j++] = (Button) layout.getChildAt(i);
+            }
+        }
     }
 }

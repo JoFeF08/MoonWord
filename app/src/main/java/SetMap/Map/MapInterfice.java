@@ -4,11 +4,16 @@
  */
 package SetMap.Map;
 
+import java.util.Iterator;
+
+import SetMap.Set.Pair;
+
 /**
  *
  * @author daniel
  */
 public interface MapInterfice<K,V> {
+
     /**
      * 
      * @param key
@@ -36,4 +41,10 @@ public interface MapInterfice<K,V> {
      * @return 
      */
     public boolean isEmpty();
+
+    /**
+     *
+     */
+    public Iterator<Pair<K,V>> iterator();
+
 }

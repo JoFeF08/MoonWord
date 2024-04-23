@@ -66,7 +66,7 @@ public class UnsortedArraySet<E> implements SetInterfice<E> {
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<E> iterator() {
         return new ArraySetIterator<E>();   
     }
 

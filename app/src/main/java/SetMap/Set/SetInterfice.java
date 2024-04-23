@@ -41,5 +41,5 @@ public interface SetInterfice<E> {
      */
     public boolean isEmpty();
     
-    public Iterator iterator();
+    public Iterator<E> iterator();
 }
