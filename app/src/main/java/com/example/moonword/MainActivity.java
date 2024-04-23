@@ -22,7 +22,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private Button[] charButtons = new Button[7];
-
+    private TextView textViewIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         getCharButtons();
+        textViewIntent = findViewById(R.id.textViewIntent);
+        textViewIntent.setText("");
 
         crearFilaTextViews(R.id.ref15H, 7);
         //test
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         String lletra = btn.getText().toString();
         System.out.println("D: lletra:"+lletra);
         btn.setEnabled(false);
+        textViewIntent.setText(textViewIntent.getText().toString()+btn.getText());
     }
 
     public TextView[] crearFilaTextViews(@IdRes int guia, int lletres){
@@ -68,17 +71,17 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("MARGIN :"+offsetMargin);
         // Iterar para crear y posicionar cada TextView
         for (int i = 0; i < lletres; i++) {
-            TextView textView = new TextView(this);
+            TextView textView = new TextView(this); //1
             textView.setId(View.generateViewId()); // Generar ID único para el TextView
             int id = textView.getId();
             textView.setText(""+i);
             textView.setTextSize(32);
             textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             textView.setBackgroundColor(Color.parseColor("#53acac"));
-            layout.addView(textView);
+            layout.addView(textView); //2
 
             ConstraintSet constraintSet = new ConstraintSet();
-            constraintSet.clone(layout);
+            constraintSet.clone(layout); //
             constraintSet.constrainWidth(id, width);
             constraintSet.constrainHeight(id, 120);
 
@@ -102,17 +105,21 @@ public class MainActivity extends AppCompatActivity {
     public void btnClear(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado clear");
+
         for(Button b:charButtons){
             b.setEnabled(true);
         }
+        textViewIntent.setText("");
     }
 
     public void btnSend(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado send");
+
         for(Button b:charButtons){
             b.setEnabled(true);
         }
+        textViewIntent.setText("");
     }
 
     public void btnRandom(View v){
