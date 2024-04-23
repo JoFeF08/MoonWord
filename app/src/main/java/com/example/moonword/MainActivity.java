@@ -9,6 +9,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.app.AlertDialog;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.fonts.FontStyle;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(interficie);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        crearFilaTextViews(R.id.ref15H, 15);
+        crearFilaTextViews(R.id.ref15H, 7);
     }
 
     public void setLletra(View v){
@@ -49,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         final int width = 60;
-        final int offsetMargin = displayMetrics.widthPixels/2 - (width*lletres/2) - (int)layout.getX();
+        final int padding = 10;
+        final int offsetMargin = displayMetrics.widthPixels/2 - (((width*lletres)+padding*(lletres-1))/2) - (int)layout.getX();
         System.out.println("MARGIN :"+offsetMargin);
         // Iterar para crear y posicionar cada TextView
         for (int i = 0; i < lletres; i++) {
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(""+i);
             textView.setTextSize(32);
             textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
+            textView.setBackgroundColor(Color.parseColor("#a9d6d6"));
             layout.addView(textView);
 
             ConstraintSet constraintSet = new ConstraintSet();
@@ -70,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             if(i==0){
                 constraintSet.connect(id, ConstraintSet.START, layout.getId(), ConstraintSet.START, offsetMargin);
             }else{
-                constraintSet.connect(id, ConstraintSet.START, lastTextViewId, ConstraintSet.END, 0);
+                constraintSet.connect(id, ConstraintSet.START, lastTextViewId, ConstraintSet.END, padding);
             }
 
             //constraintSet.centerVertically(id, layout.getId());
