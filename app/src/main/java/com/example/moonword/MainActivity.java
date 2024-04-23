@@ -24,6 +24,12 @@ public class MainActivity extends AppCompatActivity {
     private Button[] charButtons = new Button[7];
     private TextView textViewIntent;
 
+    private TextView[][] hiddenWords = new TextView[5][];
+    /**
+     * controla cuantas filas de palabras hay en un momento dado
+     */
+    private int currentDepthHiddenWords = 0;
+
     private Game currentGame;
 
     @Override
@@ -39,17 +45,29 @@ public class MainActivity extends AppCompatActivity {
         textViewIntent = findViewById(R.id.textViewIntent);
         textViewIntent.setText("");
 
-        crearFilaTextViews(R.id.ref15H, 7);
+        for (int i = 0; i < 5; i++) {
+            hiddenWords[currentDepthHiddenWords]=crearFilaTextViews(R.id.ref15H, i+3);
+            currentDepthHiddenWords++;
+        }
+
         //test
 
 
     }
 
+    /**
+     * Inicialitza el joc
+     */
     private void startGame(){
         this.currentGame = new Game(7);
+        this.currentDepthHiddenWords=0;
 
     }
 
+    /**
+     * Onclick dels botons de lletres
+     * @param v
+     */
     public void setLletra(View v){
         Button btn =  (Button) v;
         String lletra = btn.getText().toString();
@@ -58,8 +76,14 @@ public class MainActivity extends AppCompatActivity {
         textViewIntent.setText(textViewIntent.getText().toString()+btn.getText());
     }
 
+    /**
+     * Genera una fila de una paraula oculta
+     * @param guia
+     * @param lletres
+     * @return
+     */
     public TextView[] crearFilaTextViews(@IdRes int guia, int lletres){
-        ConstraintLayout layout = findViewById(R.id.hiddenWordsConstraint);
+        ConstraintLayout layout = findViewById(R.id.parentConstraint);
 
         TextView textViews[] = new TextView[lletres];
 
@@ -67,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        final int width = 60;
+        final int width = 120;
+        final int height = 180;
         final int padding = 10;
         final int offsetMargin = displayMetrics.widthPixels/2 - (((width*lletres)+padding*(lletres-1))/2) - (int)layout.getX();
         System.out.println("MARGIN :"+offsetMargin);
@@ -77,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setId(View.generateViewId()); // Generar ID único para el TextView
             int id = textView.getId();
             textView.setText(""+i);
-            textView.setTextSize(32);
+            textView.setTextSize(52);
             textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             textView.setBackgroundColor(Color.parseColor("#53acac"));
             layout.addView(textView); //2
@@ -85,8 +110,9 @@ public class MainActivity extends AppCompatActivity {
             ConstraintSet constraintSet = new ConstraintSet();
             constraintSet.clone(layout); //
             constraintSet.constrainWidth(id, width);
-            constraintSet.constrainHeight(id, 120);
+            constraintSet.constrainHeight(id, height);
 
+            constraintSet.connect(id, ConstraintSet.TOP, guia, ConstraintSet.BOTTOM, (height+padding)*currentDepthHiddenWords);
             if(i==0){
                 constraintSet.connect(id, ConstraintSet.START, layout.getId(), ConstraintSet.START, offsetMargin);
             }else{
@@ -99,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
             textViews[i] = textView;
             lastTextViewId = id;
         }
-
         return textViews;
     }
 
@@ -118,6 +143,9 @@ public class MainActivity extends AppCompatActivity {
         clearIntento();
     }
 
+    /**
+     * Rehabilita els botons de lletra i limpia l'intent actual
+     */
     private void clearIntento() {
         for(Button b:charButtons){
             b.setEnabled(true);
