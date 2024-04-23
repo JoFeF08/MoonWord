@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Button[] charButtons = new Button[7];
     private TextView textViewIntent;
+
+    private Game currentGame;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,13 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
         crearFilaTextViews(R.id.ref15H, 7);
         //test
-        System.out.println(Game.esParaulaSolucio("puresa", "apres"));
-        System.out.println(Game.esParaulaSolucio("puresa", "apresa"));
-        System.out.println(Game.esParaulaSolucio("copta", "coa"));
-        System.out.println(Game.esParaulaSolucio("saca", "casa"));
-        System.out.println(Game.esParaulaSolucio("feiner", "ene")) ;
-        System.out.println(Game.esParaulaSolucio("nado", "dona"));
-        System.out.println(Game.esParaulaSolucio("nimfa", "fama"));
+
+
+    }
+
+    private void startGame(){
+        this.currentGame = new Game(7);
 
     }
 
@@ -106,16 +108,17 @@ public class MainActivity extends AppCompatActivity {
         Button btn = (Button)v;
         System.out.println("D: pulsado clear");
 
-        for(Button b:charButtons){
-            b.setEnabled(true);
-        }
-        textViewIntent.setText("");
+        clearIntento();
     }
 
     public void btnSend(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado send");
 
+        clearIntento();
+    }
+
+    private void clearIntento() {
         for(Button b:charButtons){
             b.setEnabled(true);
         }
@@ -125,6 +128,23 @@ public class MainActivity extends AppCompatActivity {
     public void btnRandom(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado Random");
+
+        //un solo for sobre los botones?
+        char[] letras = new char[7]; //depende tamaño letra max!!
+        for (int i = 0; i < letras.length; i++) {
+            letras[i] = charButtons[i].getText().charAt(0);
+        }
+        for (int i = letras.length-1; i>1 ; i--) {
+            int j = Game.random.nextInt(i-1);
+            char aux = letras[i];
+            letras[i]=letras[j];
+            letras[j]=aux;
+        }
+        for (int i = 0; i < letras.length; i++) {
+            charButtons[i].setText(""+letras[i]);
+        }
+
+        clearIntento();
     }
 
     public void btnBonus(View v){
@@ -148,7 +168,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void btnRestart(View v){
         Button btn = (Button)v;
-        System.out.println("D: pulsado mezcla");
+        System.out.println("D: pulsado restart");
+
+        clearIntento();
     }
 
     private void getCharButtons(){
@@ -156,7 +178,9 @@ public class MainActivity extends AppCompatActivity {
         int j=0;
         for(int i=0;i<layout.getChildCount();i++){
             if(layout.getChildAt(i) instanceof Button){
-                charButtons[j++] = (Button) layout.getChildAt(i);
+                Button btn = (Button) layout.getChildAt(i);
+                btn.setText(""+Game.abecedari[Game.random.nextInt(Game.abecedari.length)]); //PLACEHOLDER
+                charButtons[j++] = btn;
             }
         }
     }

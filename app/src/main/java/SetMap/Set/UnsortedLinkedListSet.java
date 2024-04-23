@@ -10,7 +10,7 @@ import java.util.Iterator;
  *
  * @author daniel
  */
-public class UnsortedLinkedListSet<E> implements SetInterfice<E> {
+public class UnsortedLinkedListSet<E> implements SetInterficie<E> {
     
     private Node<E> first;
     

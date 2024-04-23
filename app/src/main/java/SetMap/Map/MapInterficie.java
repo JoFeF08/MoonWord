@@ -12,7 +12,7 @@ import SetMap.Set.Pair;
  *
  * @author daniel
  */
-public interface MapInterfice<K,V> {
+public interface MapInterficie<K,V> {
 
     /**
      * 

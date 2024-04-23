@@ -10,7 +10,7 @@ import java.util.Iterator;
  *
  * @author daniel
  */
-public class UnsortedArraySet<E> implements SetInterfice<E> {
+public class UnsortedArraySet<E> implements SetInterficie<E> {
 
     private E[] arr;
     private int n;

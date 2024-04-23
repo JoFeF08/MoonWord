@@ -6,9 +6,7 @@ import java.util.Iterator;
 import SetMap.Set.Pair;
 import kotlin.NotImplementedError;
 
-import java.lang.reflect.Array;
-
-public class UnsortedArrayMap<K, V> implements  MapInterfice<K,V>{
+public class UnsortedArrayMap<K, V> implements MapInterficie<K,V> {
 
     private K keys[];
     private V vals[];

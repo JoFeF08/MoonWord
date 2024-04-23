@@ -12,7 +12,7 @@ import java.util.Iterator;
  * @author daniel
  * @param <E>
  */
-public interface SetInterfice<E> {
+public interface SetInterficie<E> {
 
     /**
      *
