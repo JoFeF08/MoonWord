@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -51,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
             hiddenWords[currentDepthHiddenWords]=crearFilaTextViews(R.id.ref15H, i+3);
             currentDepthHiddenWords++;
         }
+        mostraParaula ("paco", 1) ;
+        mostraParaula ("tonto", 2) ;
+
+
 
         //test
 
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             TextView textView = new TextView(this); //1
             textView.setId(View.generateViewId()); // Generar ID único para el TextView
             int id = textView.getId();
-            textView.setText(""+i);
+            textView.setText("");
             textView.setTextSize(52);
             textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             textView.setBackgroundColor(Color.parseColor("#53acac"));
@@ -130,9 +135,18 @@ public class MainActivity extends AppCompatActivity {
         return textViews;
     }
 
+    private void mostraParaula ( String s , int posicio ){
+        TextView[] panells = hiddenWords[posicio];
+        char[] lletres = s.toUpperCase().toCharArray();
+        for (int i = 0; i < s.length(); i++) {
+            panells[i].setText(""+lletres[i]);
+        }
+
+    }
+
 
     public void btnClear(View v){
-        Button btn = (Button)v;
+        Button btn = (Button) v;
         System.out.println("D: pulsado clear");
 
         clearIntento();
@@ -146,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Rehabilita els botons de lletra i limpia l'intent actual
+     * Rehabilita els botons de lletra i neteja l'intent actual
      */
     private void clearIntento() {
         for(Button b:charButtons){
@@ -155,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         textViewIntent.setText("");
     }
 
+    @SuppressLint("SetTextI18n")
     public void btnRandom(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado Random");
