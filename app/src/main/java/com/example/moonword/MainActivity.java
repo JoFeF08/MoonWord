@@ -50,11 +50,13 @@ public class MainActivity extends AppCompatActivity {
             hiddenWords[currentDepthHiddenWords]=crearFilaTextViews(R.id.ref15H, i+3);
             currentDepthHiddenWords++;
         }
-        mostraParaula ("paco", 1) ;
-        mostraParaula ("tonto", 2) ;
-
-
-
+        mostraParaula ("pac ", 1) ;
+        mostraParaula ("t nt ", 2) ;
+        mostraPrimeraLletra ("de lu ", 3) ;
+        mostraLletraPosicio("de-llu ", 3,4);
+        mostraLletraPosicio("de-llu ", 3,3);
+        mostraLletraPosicio("de-llu ", 3,2);
+        mostraParaula ("cma  r-", 4) ;
         //test
 
 
@@ -142,12 +144,50 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void mostraPrimeraLletra ( String s , int posicio ){
+        mostraLletraPosicio(s,posicio,0);
+    }
+
+    private void mostraLletraPosicio ( String s , int posicio, int n_lletra){
+        TextView[] panells = hiddenWords[posicio];
+        char[] lletres = s.toUpperCase().toCharArray();
+        panells[n_lletra].setText(""+lletres[n_lletra]);
+    }
+
+
+    private void enableViews (int parent ){
+        ConstraintLayout lay = findViewById(parent);
+        int nunFills = lay.getChildCount();
+        for (int i = 0; i < nunFills; i++) {
+            View v =  lay.getChildAt(i);
+            if(v.getId() == R.id.layButLletres || v.getId() == R.id.layEscritura){
+                enableViews(v.getId());
+            }
+            v.setEnabled(true);
+        }
+        lay.setEnabled(true);
+    }
+    private void disableViews (int parent ){
+        ConstraintLayout lay = findViewById(parent);
+        int nunFills = lay.getChildCount();
+        for (int i = 0; i < nunFills; i++) {
+            View v =  lay.getChildAt(i);
+            if(v.getId() == R.id.layButLletres || v.getId() == R.id.layEscritura) {
+                disableViews(v.getId());
+            }else if(v.getId() != R.id.bonusButton && v.getId() != R.id.restartButton) {
+                v.setEnabled(false);
+            }
+        }
+        lay.setEnabled(false);
+    }
+
 
     public void btnClear(View v){
         Button btn = (Button) v;
         System.out.println("D: pulsado clear");
 
         clearIntento();
+        disableViews (R.id.parentConstraint);
     }
 
     public void btnSend(View v){
@@ -214,6 +254,8 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("D: pulsado restart");
 
         clearIntento();
+
+        enableViews(R.id.parentConstraint);
     }
 
     private void getCharButtons(){
