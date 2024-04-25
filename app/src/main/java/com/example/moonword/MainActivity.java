@@ -50,14 +50,14 @@ public class MainActivity extends AppCompatActivity {
 
         startGame();
 
-        mostraParaula ("pac ", 1) ;
+        /*mostraParaula ("pac ", 1) ;
         mostraParaula ("t nt ", 2) ;
         mostraPrimeraLletra ("de lu ", 3) ;
         mostraLletraPosicio("de-llu ", 3,4);
         mostraLletraPosicio("de-llu ", 3,3);
         mostraLletraPosicio("de-llu ", 3,2);
         mostraParaula ("cma  r-", 4) ;
-
+*/
 
 
         //test
