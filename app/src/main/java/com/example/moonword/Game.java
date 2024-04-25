@@ -47,4 +47,8 @@ public class Game {
         }
     }
 
+    public int getnLletres(){
+        return nLletres;
+    }
+
 }
