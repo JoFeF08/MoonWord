@@ -17,6 +17,7 @@ import android.graphics.fonts.FontStyle;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -31,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     /**
      * controla cuantas filas de palabras hay en un momento dado
      */
-    private int currentDepthHiddenWords = 0;
 
     private Game currentGame;
 
@@ -46,12 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
         getCharButtons();
         textViewIntent = findViewById(R.id.textViewIntent);
-        textViewIntent.setText("");
 
-        for (int i = 0; i < 5; i++) {
-            hiddenWords[currentDepthHiddenWords]=crearFilaTextViews(R.id.ref15H, i+3);
-            currentDepthHiddenWords++;
-        }
+
+        startGame();
+
         mostraParaula ("paco", 1) ;
         mostraParaula ("tonto", 2) ;
 
@@ -66,8 +64,26 @@ public class MainActivity extends AppCompatActivity {
      * Inicialitza el joc
      */
     private void startGame(){
-        this.currentGame = new Game(7);
-        this.currentDepthHiddenWords=0;
+        this.currentGame = new Game(Game.random.nextInt(3)+3);
+        System.out.println("GAME: "+ currentGame.getnLletres());
+        clearIntento();
+        //borrar anteriors
+        for(int i=0;i<hiddenWords.length;i++){
+            if(hiddenWords[i]==null){
+                continue;
+            }
+            for(int j=0;j<hiddenWords[i].length;j++){
+                if(hiddenWords[i][j]==null){
+                    continue;
+                }
+                ((ConstraintLayout)hiddenWords[i][j].getParent()).removeView(hiddenWords[i][j]);
+            }
+            hiddenWords[i]=null;
+        }
+        //crear nous
+        for (int i = 0; i < currentGame.getnLletres(); i++) {
+            hiddenWords[i]=crearFilaTextViews(R.id.ref15H, i+3, i);
+        }
 
     }
 
@@ -89,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
      * @param lletres
      * @return
      */
-    public TextView[] crearFilaTextViews(@IdRes int guia, int lletres){
+    public TextView[] crearFilaTextViews(@IdRes int guia, int lletres, int currentDepthHiddenWords){
         ConstraintLayout layout = findViewById(R.id.parentConstraint);
 
         TextView textViews[] = new TextView[lletres];
@@ -102,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         final int height = 180;
         final int padding = 10;
         final int offsetMargin = displayMetrics.widthPixels/2 - (((width*lletres)+padding*(lletres-1))/2) - (int)layout.getX();
-        System.out.println("MARGIN :"+offsetMargin);
+
         // Iterar para crear y posicionar cada TextView
         for (int i = 0; i < lletres; i++) {
             TextView textView = new TextView(this); //1
@@ -216,7 +232,8 @@ public class MainActivity extends AppCompatActivity {
         Button btn = (Button)v;
         System.out.println("D: pulsado restart");
         mostrarMissatge("REINICIAR", true);
-        clearIntento();
+        nextTheme();
+        startGame();
     }
 
     private void mostrarMissatge(String s, boolean llarg){
@@ -224,7 +241,11 @@ public class MainActivity extends AppCompatActivity {
         int duration = llarg ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, s, duration) ;
-        toast.show ();
+        toast.show();
+    }
+
+    private void nextTheme(){
+        System.out.println("siguiente tema");
     }
 
     private void getCharButtons(){
