@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.fonts.FontStyle;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -192,13 +194,22 @@ public class MainActivity extends AppCompatActivity {
     public void btnHint(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado ayuda");
+        mostrarMissatge("AYUDA", false);
     }
 
     public void btnRestart(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado restart");
-
+        mostrarMissatge("REINICIAR", true);
         clearIntento();
+    }
+
+    private void mostrarMissatge(String s, boolean llarg){
+        Context context = getApplicationContext ();
+        int duration = llarg ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, s, duration) ;
+        toast.show ();
     }
 
     private void getCharButtons(){
