@@ -70,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
         //borrar anteriors
         for(int i=0;i<hiddenWords.length;i++){
             if(hiddenWords[i]==null){
-                continue;
+                break;
             }
             for(int j=0;j<hiddenWords[i].length;j++){
                 if(hiddenWords[i][j]==null){
-                    continue;
+                    break;
                 }
                 ((ConstraintLayout)hiddenWords[i][j].getParent()).removeView(hiddenWords[i][j]);
             }
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         }
         //crear nous
         for (int i = 0; i < currentGame.getnLletres(); i++) {
-            hiddenWords[i]=crearFilaTextViews(R.id.ref15H, i+3, i);
+            hiddenWords[i]=crearFilaTextViews(R.id.ref15H, i+Game.random.nextInt(3)+1, i);
         }
 
     }
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     private void mostraParaula ( String s , int posicio ){
         TextView[] panells = hiddenWords[posicio];
         char[] lletres = s.toUpperCase().toCharArray();
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i < s.length() && i<hiddenWords[posicio].length; i++) {
             panells[i].setText(""+lletres[i]);
         }
 
