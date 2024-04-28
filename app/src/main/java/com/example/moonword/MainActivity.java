@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(interficie);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
+        DictReader.configure(this);
+
         getCharButtons();
         textViewIntent = findViewById(R.id.textViewIntent);
 
