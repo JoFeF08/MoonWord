@@ -1,29 +1,58 @@
 package com.example.moonword;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
 import androidx.annotation.IdRes;
-import androidx.annotation.IntRange;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.fonts.FontStyle;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.Manifest;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
+
+    private static final int REQUEST_CAMERA_PERMISSION = 200;
+    private static final int PERMISSIONS_REQUEST_CODE = 200;
+    private String[] permissions = {
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.WRITE_CONTACTS,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.READ_CALENDAR,
+            Manifest.permission.WRITE_CALENDAR,
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.USE_FINGERPRINT
+    };
 
     private Button[] charButtons = new Button[7];
     private TextView textViewIntent;
@@ -44,11 +73,23 @@ public class MainActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(interficie);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
+        //
+        // Verificar si todos los permisos están concedidos
+        if (!PermissionUtils.arePermissionsGranted(this, permissions)) {
+            // Si no están concedidos, solicitar los permisos al usuario
+            PermissionUtils.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE);
+        } else {
+            // Todos los permisos están concedidos, continuar con la lógica de la aplicación
+            // Por ejemplo, iniciar una función que requiere permisos
+            // doSomethingWithPermissions();
+        }
+        checkCameraPermission();
+
+
         DictReader.configure(this);
 
         getCharButtons();
         textViewIntent = findViewById(R.id.textViewIntent);
-
 
         startGame();
 
@@ -60,10 +101,6 @@ public class MainActivity extends AppCompatActivity {
         mostraLletraPosicio("de-llu ", 3,2);
         mostraParaula ("cma  r-", 4) ;
 */
-
-
-        //test
-
 
     }
 
@@ -305,6 +342,60 @@ public class MainActivity extends AppCompatActivity {
                 btn.setText(""+Game.abecedari[Game.random.nextInt(Game.abecedari.length)]); //PLACEHOLDER
                 charButtons[j++] = btn;
             }
+        }
+    }
+
+
+    // Verificar y solicitar permisos de cámara
+    private void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    REQUEST_CAMERA_PERMISSION);
+        } else {
+            // Permiso ya concedido, puedes abrir la cámara
+        }
+    }
+}
+ class PermissionUtils {
+
+    // Método para comprobar si todos los permisos especificados están concedidos
+    public static boolean arePermissionsGranted(Context context, String[] permissions) {
+        // Verificar para dispositivos con Android 6.0 (API 23) o superior, ya que los permisos se solicitan dinámicamente desde esta versión
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            for (String permission : permissions) {
+                // Verificar si el permiso actual no está concedido
+                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    // Si alguno de los permisos no está concedido, retornar false
+                    return false;
+                }
+            }
+        }
+        // Si todos los permisos están concedidos, retornar true
+        return true;
+    }
+
+    // Método para solicitar permisos al usuario si no están concedidos
+    public static void requestPermissions(Activity activity, String[] permissions, int requestCode) {
+        // Listar permisos que necesitan ser solicitados
+        List<String> permissionsToRequest = new ArrayList<>();
+
+        // Verificar para cada permiso si no está concedido
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+                // Agregar permiso a la lista de permisos a solicitar
+                permissionsToRequest.add(permission);
+            }
+        }
+
+        // Convertir lista de permisos a un array de Strings
+        String[] permissionsArray = new String[permissionsToRequest.size()];
+        permissionsArray = permissionsToRequest.toArray(permissionsArray);
+
+        // Solicitar permisos al usuario (solo si hay permisos que solicitar)
+        if (permissionsArray.length > 0) {
+            ActivityCompat.requestPermissions(activity, permissionsArray, requestCode);
         }
     }
 }
