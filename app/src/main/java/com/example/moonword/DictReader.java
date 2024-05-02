@@ -1,7 +1,6 @@
 package com.example.moonword;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -17,8 +16,8 @@ public class DictReader {
 
     private static BufferedReader reader;
 
-    private static MapInterficie<Integer, ArrayList<String>> mapaNum;
-    private static MapInterficie<String, String> mapaWord;
+    private static MapInterficie<Integer, ArrayList<String>> mapNumWords;
+    private static MapInterficie<String, String> mapAllWords;
 
     /**
      *
@@ -36,14 +35,15 @@ public class DictReader {
         while (reader.ready()){
             String line = reader.readLine();
             String[] words = line.split(";");
-            mapaWord.put(words[0], words[1]);
+            //per_cerca;correcte
+            mapAllWords.put(words[0], words[1]);
             int len = words[0].length();
-            if(mapaNum.get(len)==null){
+            if(mapNumWords.get(len)==null){
                 ArrayList<String> aux = new ArrayList<>();
                 aux.add(words[0]);
-                mapaNum.put(len, aux);
+                mapNumWords.put(len, aux);
             }else{
-                mapaNum.get(len).add(words[0]);
+                mapNumWords.get(len).add(words[0]);
             }
         }
     }

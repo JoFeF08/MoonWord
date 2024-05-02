@@ -1,11 +1,13 @@
 package com.example.moonword;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
 import SetMap.Map.MapInterficie;
 import SetMap.Map.UnsortedArrayMap;
 import SetMap.Set.Pair;
+import SetMap.Set.SetInterficie;
 
 public class Game {
 
@@ -15,6 +17,9 @@ public class Game {
     public static final char[] abecedari = "abcdefghijklmnopqrstuvwxyzç".toCharArray();
     public static final Random random = new Random();
 
+    private MapInterficie<Integer, ArrayList<String>> mapNumSol;
+    private MapInterficie<String, Integer> mapWordsSol;
+    private SetInterficie<String> setFoundWords;
     private int nLletres;
 
     public Game(int nLletres){
