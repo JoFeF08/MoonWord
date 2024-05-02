@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import android.Manifest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,21 +88,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         DictReader.configure(this);
+        try {
+            DictReader.loadAll();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         getCharButtons();
         textViewIntent = findViewById(R.id.textViewIntent);
 
         startGame();
-
-        /*mostraParaula ("pac ", 1) ;
-        mostraParaula ("t nt ", 2) ;
-        mostraPrimeraLletra ("de lu ", 3) ;
-        mostraLletraPosicio("de-llu ", 3,4);
-        mostraLletraPosicio("de-llu ", 3,3);
-        mostraLletraPosicio("de-llu ", 3,2);
-        mostraParaula ("cma  r-", 4) ;
-*/
-
     }
 
     /**

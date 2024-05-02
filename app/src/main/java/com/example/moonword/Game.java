@@ -24,6 +24,7 @@ public class Game {
 
     public Game(int nLletres){
         this.nLletres = nLletres;
+
     }
     public static boolean esParaulaSolucio(String p1, String p2){
         MapInterficie<Character, Integer> p1char = new UnsortedArrayMap<>(p1.length()),
@@ -40,6 +41,7 @@ public class Game {
         }
         return true;
     }
+
 
 
     private static void addStringToMap(String p, MapInterficie<Character, Integer> map){

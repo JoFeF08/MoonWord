@@ -8,6 +8,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.TreeMap;
 
 import SetMap.Map.MapInterficie;
 
@@ -16,8 +19,8 @@ public class DictReader {
 
     private static BufferedReader reader;
 
-    private static MapInterficie<Integer, ArrayList<String>> mapNumWords;
-    private static MapInterficie<String, String> mapAllWords;
+    private static TreeMap<Integer, HashSet<String>> mapNumWords= new TreeMap<>();
+    private static HashMap<String, String>  mapAllWords = new HashMap<>();
 
     /**
      *
@@ -39,7 +42,7 @@ public class DictReader {
             mapAllWords.put(words[0], words[1]);
             int len = words[0].length();
             if(mapNumWords.get(len)==null){
-                ArrayList<String> aux = new ArrayList<>();
+                HashSet<String> aux = new HashSet<>();
                 aux.add(words[0]);
                 mapNumWords.put(len, aux);
             }else{
@@ -48,6 +51,14 @@ public class DictReader {
         }
     }
 
+
+    public static TreeMap<Integer, HashSet<String>> getMapNumWords() {
+        return mapNumWords;
+    }
+
+    public static HashMap<String, String> getMapAllWords() {
+        return mapAllWords;
+    }
 
 
 
