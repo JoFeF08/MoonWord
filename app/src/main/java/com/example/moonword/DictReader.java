@@ -41,6 +41,9 @@ public class DictReader {
             //per_cerca;correcte
             mapAllWords.put(words[0], words[1]);
             int len = words[0].length();
+            if(len<3 || len>7){
+                continue;
+            }
             if(mapNumWords.get(len)==null){
                 HashSet<String> aux = new HashSet<>();
                 aux.add(words[0]);
