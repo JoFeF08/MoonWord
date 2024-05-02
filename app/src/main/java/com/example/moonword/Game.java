@@ -23,10 +23,10 @@ public class Game {
     private SetInterficie<String> setFoundWords;
 
     private HashMap<Character, Integer> setChars = new HashMap<>();
-    private int nLletres;
+    private int tamLLetraMax;
 
-    public Game(int nLletres){
-        this.nLletres = nLletres;
+    public Game(int tamLletraMax){
+        this.tamLLetraMax = tamLletraMax;
 
     }
     public static boolean esParaulaSolucio(String p1, String p2){
@@ -57,8 +57,8 @@ public class Game {
         }
     }
 
-    public int getnLletres(){
-        return nLletres;
+    public int getTamLLetraMax(){
+        return tamLLetraMax;
     }
 
 }
