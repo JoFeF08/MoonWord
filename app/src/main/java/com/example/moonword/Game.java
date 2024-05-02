@@ -1,7 +1,6 @@
 package com.example.moonword;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -21,8 +20,6 @@ public class Game {
     private MapInterficie<Integer, ArrayList<String>> mapNumSol;
     private MapInterficie<String, Integer> mapWordsSol;
     private SetInterficie<String> setFoundWords;
-
-    private HashMap<Character, Integer> setChars = new HashMap<>();
     private int nLletres;
 
     public Game(int nLletres){
