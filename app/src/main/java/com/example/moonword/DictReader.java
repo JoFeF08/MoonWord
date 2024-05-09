@@ -19,8 +19,8 @@ public class DictReader {
 
     private static BufferedReader reader;
 
-    private static TreeMap<Integer, HashSet<String>> mapNumWords= new TreeMap<>();
-    private static HashMap<String, String>  mapAllWords = new HashMap<>();
+    private static final TreeMap<Integer, HashSet<String>> mapNumWords= new TreeMap<>();
+    private static final HashMap<String, String>  mapAllWords = new HashMap<>();
 
     /**
      *
@@ -39,22 +39,24 @@ public class DictReader {
             String line = reader.readLine();
             String[] words = line.split(";");
             //per_cerca;correcte
-            mapAllWords.put(words[0], words[1]);
-            int len = words[0].length();
+            int len = words[1].length();
             if(len<3 || len>7){
                 continue;
             }
+            mapAllWords.put(words[1], words[0]);
+
             if(mapNumWords.get(len)==null){
                 HashSet<String> aux = new HashSet<>();
-                aux.add(words[0]);
                 mapNumWords.put(len, aux);
-            }else{
-                mapNumWords.get(len).add(words[0]);
             }
+            mapNumWords.get(len).add(words[1]);
+            //System.out.println("añadido "+words[1]+" en "+len);
+
         }
     }
 
 
+    @NonNull
     public static TreeMap<Integer, HashSet<String>> getMapNumWords() {
         return mapNumWords;
     }

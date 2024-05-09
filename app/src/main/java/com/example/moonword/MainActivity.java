@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
      * Inicialitza el joc
      */
     private void startGame(){
-        this.currentGame = new Game(Game.random.nextInt(5)+3);
+        this.currentGame = new Game(Game.random.nextInt(4)+4);
         System.out.println("GAME: "+ currentGame.getTamLLetraMax());
         clearIntento();
         //borrar anteriors
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             hiddenWords[i]=null;
         }
         //crear nous
-        for (int i = 0; i < currentGame.getTamLLetraMax(); i++) {
+        for (int i = 0; i < hiddenWords.length; i++) {
             hiddenWords[i]=crearFilaTextViews(R.id.ref15H, i+Game.random.nextInt(3)+1, i);
         }
 
