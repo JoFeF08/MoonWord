@@ -1,5 +1,8 @@
 package com.example.moonword;
 
+import android.os.Debug;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,12 +25,15 @@ public class Game {
     public static final char[] abecedari = "abcdefghijklmnopqrstuvwxyzç".toCharArray();
     public static final Random random = new Random();
 
+    //map tamany paraula -> set de paraula
     private HashMap<Integer, HashSet<String>> mapNumSol;
+    //map paraula -> posició mostrar
     private HashMap<String, Integer> mapWordsSol;
+    //set paraules trobades
     private TreeSet<String> setFoundWords;
 
     private HashMap<Character, Integer> setChars = new HashMap<>();
-    private int tamLLetraMax;
+    private int tamLLetraMax, currentParaulesN;
 
 
     public Game(int tamLletraMax){
@@ -68,6 +74,30 @@ public class Game {
             mapNumSol.put(i, aux);
         }
 
+        //Triar les 5 paraules solució
+        int paraluesRestants = 5;
+        int checkSize = 7;
+        while(paraluesRestants>0 && checkSize>2){
+            HashSet<String> aux = mapNumSol.get((checkSize));
+            if(aux == null || aux.isEmpty()){
+                checkSize--;
+                continue;
+            }
+            int rPos = random.nextInt(aux.size())-1;
+            Iterator<String> iterFind = aux.iterator();
+            for (int i = 0; i < rPos; i++) {
+                iterFind.next();
+            }
+            String found = iterFind.next();
+            Log.d("GAME_INIT", "Paraula solució "+found);
+            this.mapWordsSol.put(found, paraluesRestants);
+            paraluesRestants--;
+            if(checkSize>3){
+                checkSize--;
+            }
+        }
+        this.currentParaulesN = 5-paraluesRestants;
+        Log.d("GAME_INIT", "mapSolucions" + this.mapWordsSol+ " "+this.currentParaulesN);
 
 
     }
