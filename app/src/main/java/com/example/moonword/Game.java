@@ -33,8 +33,21 @@ public class Game {
     private TreeSet<String> setFoundWords;
 
     private HashMap<Character, Integer> setChars = new HashMap<>();
-    private int tamLLetraMax, currentParaulesN;
 
+//numTotalW cantidad de paraules que es poden escriure amb les lletres seleccionades
+    private int tamLLetraMax, currentParaulesN, numTotalW;
+
+    public HashMap<Character, Integer> getSetChars() {
+        return setChars;
+    }
+
+    public HashMap<Integer, HashSet<String>> getMapNumSol() {
+        return mapNumSol;
+    }
+
+    public TreeSet<String> getSetFoundWords() {
+        return setFoundWords;
+    }
 
     public Game(int tamLletraMax){
         this.tamLLetraMax = tamLletraMax;
@@ -60,6 +73,7 @@ public class Game {
         System.out.println("setChars="+setChars);
 
         //emplenar totes les paraules posibles
+        numTotalW = 0;
         for (int i = 3; i <= pSel.length(); i++) {
             HashSet<String> aux = new HashSet<>();
             HashSet<String> allW = DictReader.getMapNumWords().get(i);
@@ -68,6 +82,8 @@ public class Game {
             for (String s : allW) {
                 if (esParaulaSolucio(pSel, s)) {
                     aux.add(s);
+                    //Calcular nombre de paraules possibles amb les lletres
+                    numTotalW++;
                 }
             }
             System.out.println(aux);
@@ -142,4 +158,7 @@ public class Game {
         return tamLLetraMax;
     }
 
+    public int getNumTotalW() {
+        return numTotalW;
+    }
 }

@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_percent="0.17" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/ref58H"
@@ -68,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.025" />
+        app:layout_constraintGuide_percent="0.05" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/ref81H"
@@ -345,7 +345,6 @@
         android:id="@+id/TextViewContador"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="@string/has_encertat"
         android:textColor="#FFFFFF"
         android:textColorLink="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/ref15H"

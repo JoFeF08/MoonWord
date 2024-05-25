@@ -15,6 +15,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
@@ -25,8 +30,13 @@ import android.widget.Toast;
 import android.Manifest;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
 
     private Button[] charButtons = new Button[7];
     private TextView textViewIntent;
+    private TextView textCont;
+    private  int num_boto;
+
+    private int contadorCorrecte;
 
     private TextView[][] hiddenWords = new TextView[5][];
     /**
@@ -96,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         getCharButtons();
         textViewIntent = findViewById(R.id.textViewIntent);
+        textCont = findViewById(R.id.TextViewContador);
 
         startGame();
     }
@@ -105,8 +120,22 @@ public class MainActivity extends AppCompatActivity {
      */
     private void startGame(){
         this.currentGame = new Game(Game.random.nextInt(4)+4);
+        contadorCorrecte = 0 ;
+        actulaitzarTextContador(null);
         System.out.println("GAME: "+ currentGame.getTamLLetraMax());
+        clearSetButtons();
+        num_boto = 0;
+        for (Map.Entry<Character, Integer> entry : currentGame.getSetChars().entrySet()) {
+            Character character = entry.getKey();
+            int count = entry.getValue();
+
+            for (int i = 0; i < count; i++) {
+                charButtons[num_boto].setText(character.toString());
+                num_boto++;
+            }
+        }
         clearIntento();
+        botons_aleatoris();
         //borrar anteriors
         for(int i=0;i<hiddenWords.length;i++){
             if(hiddenWords[i]==null){
@@ -249,27 +278,93 @@ public class MainActivity extends AppCompatActivity {
     public void btnSend(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado send");
+        String intro = (String) textViewIntent.getText();
+        actulaitzarTextContador(intro);
 
         clearIntento();
     }
+
+    private void  actulaitzarTextContador(String p){
+        String imprimir = "";
+        boolean conte = false;
+        HashMap<Integer, HashSet<String>> paraules = currentGame.getMapNumSol();
+        TreeSet<String> trobades = currentGame.getSetFoundWords();
+        if(p != null && conteHmapHsetS(paraules,p)){
+
+            if(trobades.contains(p)){
+                conte = true;
+
+            }else{
+                currentGame.getSetFoundWords().add(p);
+                contadorCorrecte++;
+            }
+
+            SpannableStringBuilder text = new SpannableStringBuilder();
+
+            for (String paraula : currentGame.getSetFoundWords()) {
+                SpannableString sParaula = new SpannableString(paraula + ", ");
+                if (paraula.equals(p) && conte) { // Palabras en posiciones pares (considerando índice base 0)
+                    sParaula.setSpan(new ForegroundColorSpan(getResources().getColor(android.R.color.holo_red_dark)), 0, paraula.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                text.append(sParaula);
+            }
+            imprimir = "Has encertat (" + contadorCorrecte + "/" +currentGame.getNumTotalW() +"): " + text;
+
+        }else if (p == null){
+            imprimir = "Has encertat (" + contadorCorrecte + "/" +currentGame.getNumTotalW() +"): ";
+        }else{
+            imprimir = (String) textCont.getText();
+        }
+        textCont.setText(imprimir);
+    }
+
+    private boolean conteHmapHsetS(HashMap<Integer, HashSet<String>> paraules, String p) {
+        for (Map.Entry<Integer, HashSet<String>> entry : paraules.entrySet()) {
+            HashSet<String> set = entry.getValue();
+            if (set.contains(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean conteTreeS(HashMap<Integer, HashSet<String>> paraules, String p) {
+        for (Map.Entry<Integer, HashSet<String>> entry : paraules.entrySet()) {
+            HashSet<String> set = entry.getValue();
+            if (set.contains(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Rehabilita els botons de lletra i neteja l'intent actual
      */
     private void clearIntento() {
         for(Button b:charButtons){
-            b.setEnabled(true);
+            b.setEnabled(!b.getText().equals(""));
         }
         textViewIntent.setText("");
+    }
+
+    private void clearSetButtons() {
+        for(Button b:charButtons) {
+            b.setEnabled(true);
+            b.setText("");
+        }
     }
 
     @SuppressLint("SetTextI18n")
     public void btnRandom(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado Random");
+        botons_aleatoris();
+    }
 
-        //un solo for sobre los botones?
-        char[] letras = new char[7]; //depende tamaño letra max!!
+    private void botons_aleatoris(){
+        char[] letras = new char[num_boto];
         for (int i = 0; i < letras.length; i++) {
             letras[i] = charButtons[i].getText().charAt(0);
         }
@@ -285,7 +380,6 @@ public class MainActivity extends AppCompatActivity {
 
         clearIntento();
     }
-
     public void btnBonus(View v){
         Button btn = (Button)v;
         System.out.println("D: pulsado bonus");
@@ -307,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btnRestart(View v){
+        enableViews(R.id.parentConstraint);
         Button btn = (Button)v;
         System.out.println("D: pulsado restart");
         mostrarMissatge("REINICIAR", true);
@@ -314,7 +409,7 @@ public class MainActivity extends AppCompatActivity {
         startGame();
         clearIntento();
 
-        enableViews(R.id.parentConstraint);
+
     }
 
     private void mostrarMissatge(String s, boolean llarg){
