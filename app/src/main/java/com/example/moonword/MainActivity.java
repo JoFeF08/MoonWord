@@ -15,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -272,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("D: pulsado clear");
 
         clearIntento();
-        disableViews (R.id.parentConstraint);
+
     }
 
     public void btnSend(View v){
@@ -289,33 +290,38 @@ public class MainActivity extends AppCompatActivity {
         boolean conte = false;
         HashMap<Integer, HashSet<String>> paraules = currentGame.getMapNumSol();
         TreeSet<String> trobades = currentGame.getSetFoundWords();
-        if(p != null && conteHmapHsetS(paraules,p)){
 
-            if(trobades.contains(p)){
+
+        if(p != null) {
+            if (trobades.contains(p)) {
                 conte = true;
-
-            }else{
+            } else if (conteHmapHsetS(paraules,p)){
                 currentGame.getSetFoundWords().add(p);
                 contadorCorrecte++;
             }
 
-            SpannableStringBuilder text = new SpannableStringBuilder();
+            StringBuilder text = new StringBuilder();
 
             for (String paraula : currentGame.getSetFoundWords()) {
-                SpannableString sParaula = new SpannableString(paraula + ", ");
-                if (paraula.equals(p) && conte) { // Palabras en posiciones pares (considerando índice base 0)
-                    sParaula.setSpan(new ForegroundColorSpan(getResources().getColor(android.R.color.holo_red_dark)), 0, paraula.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                String sParaula;
+                if (paraula.equals(p) && conte) {
+                    sParaula = "<font color='red'>" + paraula + "</font>, ";
+                } else {
+                    sParaula = paraula + ", ";
                 }
                 text.append(sParaula);
             }
-            imprimir = "Has encertat (" + contadorCorrecte + "/" +currentGame.getNumTotalW() +"): " + text;
 
-        }else if (p == null){
-            imprimir = "Has encertat (" + contadorCorrecte + "/" +currentGame.getNumTotalW() +"): ";
-        }else{
+            // Construct the output message with the list of words
+            imprimir = "Has encertat (" + contadorCorrecte + "/" + currentGame.getNumTotalW() + "): " + text.toString();
+
+        }else if (p == null) {
+            imprimir = "Has encertat (" + contadorCorrecte + "/" + currentGame.getNumTotalW() + "): ";
+        } else {
             imprimir = (String) textCont.getText();
         }
-        textCont.setText(imprimir);
+
+            textCont.setText(Html.fromHtml(imprimir, Html.FROM_HTML_MODE_LEGACY));
     }
 
     private boolean conteHmapHsetS(HashMap<Integer, HashSet<String>> paraules, String p) {
@@ -408,8 +414,6 @@ public class MainActivity extends AppCompatActivity {
         nextTheme();
         startGame();
         clearIntento();
-
-
     }
 
     private void mostrarMissatge(String s, boolean llarg){
