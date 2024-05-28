@@ -138,12 +138,14 @@ public class Game {
     }
     private Set<Integer> setNAleatorios(int n, int max){
         //Log.d("NRAND", "n"+n+", max"+max);
+        int c = 0;
         TreeSet<Integer> aux = new TreeSet<>();
         if(max<n){
             n=max;
         }
-        while(aux.size()!=n){
-            aux.add(random.nextInt(max));
+        while(c!=n){
+            if(aux.add(random.nextInt(max)))
+                c++;
         }
 
         return aux;
