@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.view.WindowManager;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         this.currentGame = new Game(Game.random.nextInt(4)+4);
         contadorCorrecte = 0 ;
         actulaitzarTextContador(null);
-        System.out.println("GAME: "+ currentGame.getTamLLetraMax());
+        Log.i("START_GAME()", "GAME: "+currentGame);
         clearSetButtons();
         num_boto = 0;
         for (Map.Entry<Character, Integer> entry : currentGame.getMapChars().entrySet()) {
@@ -145,8 +147,9 @@ public class MainActivity extends AppCompatActivity {
             hiddenWords[i]=null;
         }
         //crear nous
-        for (int i = 0; i < hiddenWords.length; i++) {
-            hiddenWords[i]=crearFilaTextViews(R.id.ref15H, i+Game.random.nextInt(3)+1, i);
+        Iterator<String> iterSols = currentGame.getMapWordsSol().keySet().iterator();
+        for (int i = 0; i < hiddenWords.length && i<currentGame.getCurrentParaulesN(); i++) {
+            hiddenWords[i]=crearFilaTextViews(R.id.ref15H, iterSols.next().length(), i);
         }
 
     }

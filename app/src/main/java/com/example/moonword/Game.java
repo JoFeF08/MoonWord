@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import SetMap.Map.MapInterficie;
@@ -25,7 +26,7 @@ public class Game {
     //map tamany paraula -> set de paraula
     private HashMap<Integer, HashSet<String>> mapNumSol;
     //map paraula -> posició mostrar
-    private HashMap<String, Integer> mapWordsSol;
+    private TreeMap<String, Integer> mapWordsSol;
     //set paraules trobades
     private TreeSet<String> setFoundWords;
 
@@ -35,6 +36,7 @@ public class Game {
 //numTotalW cantidad de paraules que es poden escriure amb les lletres seleccionades
     private int tamLLetraMax, currentParaulesN, numTotalW;
 
+    //GETTERS SETTERS
     public HashMap<Character, Integer> getMapChars() {
         return mapChars;
     }
@@ -66,7 +68,7 @@ public class Game {
         addStringToMap(pSel, mapChars);
         setFoundWords = new TreeSet<>();
         mapNumSol = new HashMap<>();
-        mapWordsSol = new HashMap<>();
+        mapWordsSol = new TreeMap<>(new StringLengthComparator());
 
         System.out.println("setChars="+ mapChars);
 
@@ -79,9 +81,10 @@ public class Game {
             //usa el iterator
             for (String s : allW) {
                 if (esParaulaSolucio(pSel, s)) {
-                    aux.add(s);
-                    //Calcular nombre de paraules possibles amb les lletres
-                    numTotalW++;
+                    if(aux.add(s)) {
+                        //Calcular nombre de paraules possibles amb les lletres
+                        numTotalW++;
+                    }
                 }
             }
             System.out.println(aux);
@@ -92,7 +95,7 @@ public class Game {
         int paraluesRestants = 5;
         int checkSize = 7;
         int acumulat = 1;
-        TreeSet<String> auxSet= new TreeSet<>(new StringLengthComparator());
+        TreeSet<String> auxSet = new TreeSet<>(new StringLengthComparator());
 
         while(paraluesRestants>0 && checkSize>2){
             Log.d("SEL_LOOP", "paraulesRestants"+paraluesRestants+", checkSize:"+checkSize);
@@ -119,21 +122,22 @@ public class Game {
                 }
                 i++;
             }
-            if(checkSize>3){
+            if(checkSize>=3){
                 checkSize--;
                 acumulat++;
             }
         }
         this.currentParaulesN = 5-paraluesRestants;
+        Iterator<String> auxSetIter = auxSet.iterator();
         for(int j=0;j<currentParaulesN;j++){
-            this.mapWordsSol.put(auxSet.pollFirst(),j);
+            this.mapWordsSol.put(auxSetIter.next(),j);
         }
         Log.d("GAME_INIT", "mapSolucions" + this.mapWordsSol+ " "+this.currentParaulesN);
 
 
     }
     private Set<Integer> setNAleatorios(int n, int max){
-        Log.d("NRAND", "n"+n+", max"+max);
+        //Log.d("NRAND", "n"+n+", max"+max);
         TreeSet<Integer> aux = new TreeSet<>();
         if(max<n){
             n=max;
@@ -187,5 +191,21 @@ public class Game {
 
     public int getNumTotalW() {
         return numTotalW;
+    }
+
+    public TreeMap<String, Integer> getMapWordsSol(){
+        return this.mapWordsSol;
+    }
+
+    public int getCurrentParaulesN() {
+        return currentParaulesN;
+    }
+
+    @Override
+    public String toString(){
+        String aux = "GAME: nºParaules sol "+ this.currentParaulesN+", tamanyMax " + this.tamLLetraMax+"\n"+
+                "\tmapWordSol"+this.mapWordsSol;
+
+        return aux;
     }
 }
