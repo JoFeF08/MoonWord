@@ -16,11 +16,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
@@ -31,7 +26,6 @@ import android.widget.Toast;
 import android.Manifest;
 
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -126,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("GAME: "+ currentGame.getTamLLetraMax());
         clearSetButtons();
         num_boto = 0;
-        for (Map.Entry<Character, Integer> entry : currentGame.getSetChars().entrySet()) {
+        for (Map.Entry<Character, Integer> entry : currentGame.getMapChars().entrySet()) {
             Character character = entry.getKey();
             int count = entry.getValue();
 

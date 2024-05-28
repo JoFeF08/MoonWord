@@ -1,9 +1,7 @@
 package com.example.moonword;
 
-import android.os.Debug;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,7 +13,6 @@ import java.util.TreeSet;
 import SetMap.Map.MapInterficie;
 import SetMap.Map.UnsortedArrayMap;
 import SetMap.Set.Pair;
-import SetMap.Set.SetInterficie;
 
 public class Game {
 
@@ -32,13 +29,14 @@ public class Game {
     //set paraules trobades
     private TreeSet<String> setFoundWords;
 
-    private HashMap<Character, Integer> setChars = new HashMap<>();
+    //map Char -> Integer | Lletra -> nº aparicions
+    private HashMap<Character, Integer> mapChars = new HashMap<>();
 
 //numTotalW cantidad de paraules que es poden escriure amb les lletres seleccionades
     private int tamLLetraMax, currentParaulesN, numTotalW;
 
-    public HashMap<Character, Integer> getSetChars() {
-        return setChars;
+    public HashMap<Character, Integer> getMapChars() {
+        return mapChars;
     }
 
     public HashMap<Integer, HashSet<String>> getMapNumSol() {
@@ -64,13 +62,13 @@ public class Game {
         System.out.println("GAME: paraula molde "+pSel);
 
         //initcializar sets i maps
-        setChars = new HashMap<>();
-        addStringToMap(pSel, setChars);
+        mapChars = new HashMap<>();
+        addStringToMap(pSel, mapChars);
         setFoundWords = new TreeSet<>();
         mapNumSol = new HashMap<>();
         mapWordsSol = new HashMap<>();
 
-        System.out.println("setChars="+setChars);
+        System.out.println("setChars="+ mapChars);
 
         //emplenar totes les paraules posibles
         numTotalW = 0;
