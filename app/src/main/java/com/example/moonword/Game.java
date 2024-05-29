@@ -1,21 +1,19 @@
 package com.example.moonword;
 
-import android.os.Debug;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import SetMap.Map.MapInterficie;
 import SetMap.Map.UnsortedArrayMap;
 import SetMap.Set.Pair;
-import SetMap.Set.SetInterficie;
 
 public class Game {
 
@@ -28,17 +26,32 @@ public class Game {
     //map tamany paraula -> set de paraula
     private HashMap<Integer, HashSet<String>> mapNumSol;
     //map paraula -> posició mostrar
-    private HashMap<String, Integer> mapWordsSol;
+    private TreeMap<String, Integer> mapWordsSol;
     //set paraules trobades
     private TreeSet<String> setFoundWords;
 
-    private HashMap<Character, Integer> setChars = new HashMap<>();
+    //map Char -> Integer | Lletra -> nº aparicions
+    private HashMap<Character, Integer> mapChars = new HashMap<>();
 
 //numTotalW cantidad de paraules que es poden escriure amb les lletres seleccionades
-    private int tamLLetraMax, currentParaulesN, numTotalW, contadorCorrecte, contadorBonus;
+    private int tamLLetraMax, currentParaulesN, numTotalW;
 
-    public HashMap<Character, Integer> getSetChars() {
-        return setChars;
+    //GETTERS SETTERS
+    public HashMap<Character, Integer> getMapChars() {
+        return mapChars;
+    }
+
+
+    public int getNumTotalW() {
+        return numTotalW;
+    }
+
+    public TreeMap<String, Integer> getMapWordsSol(){
+        return this.mapWordsSol;
+    }
+
+    public int getCurrentParaulesN() {
+        return currentParaulesN;
     }
 
     public HashMap<Integer, HashSet<String>> getMapNumSol() {
@@ -47,38 +60,6 @@ public class Game {
 
     public TreeSet<String> getSetFoundWords() {
         return setFoundWords;
-    }
-
-    public int getContadorCorrecte() {
-        return contadorCorrecte;
-    }
-
-    public void setMapNumSol(HashMap<Integer, HashSet<String>> mapNumSol) {
-        this.mapNumSol = mapNumSol;
-    }
-
-    public HashMap<String, Integer> getMapWordsSol() {
-        return mapWordsSol;
-    }
-
-    public void setContadorCorrecte(int contadorCorrecte) {
-        this.contadorCorrecte = contadorCorrecte;
-    }
-
-    public void setContadorBonus(int contadorBonus) {
-        this.contadorBonus = contadorBonus;
-    }
-
-    public int getContadorBonus() {
-        return contadorBonus;
-    }
-
-    public int getTamLLetraMax(){
-        return tamLLetraMax;
-    }
-
-    public int getNumTotalW() {
-        return numTotalW;
     }
 
     public Game(int tamLletraMax){
@@ -96,13 +77,13 @@ public class Game {
         System.out.println("GAME: paraula molde "+pSel);
 
         //initcializar sets i maps
-        setChars = new HashMap<>();
-        addStringToMap(pSel, setChars);
+        mapChars = new HashMap<>();
+        addStringToMap(pSel, mapChars);
         setFoundWords = new TreeSet<>();
         mapNumSol = new HashMap<>();
-        mapWordsSol = new HashMap<>();
+        mapWordsSol = new TreeMap<>(new StringLengthComparator());
 
-        System.out.println("setChars="+setChars);
+        System.out.println("setChars="+ mapChars);
 
         //emplenar totes les paraules posibles
         numTotalW = 0;
@@ -113,9 +94,10 @@ public class Game {
             //usa el iterator
             for (String s : allW) {
                 if (esParaulaSolucio(pSel, s)) {
-                    aux.add(s);
-                    //Calcular nombre de paraules possibles amb les lletres
-                    numTotalW++;
+                    if(aux.add(s)) {
+                        //Calcular nombre de paraules possibles amb les lletres
+                        numTotalW++;
+                    }
                 }
             }
             System.out.println(aux);
@@ -125,29 +107,61 @@ public class Game {
         //Triar les 5 paraules solució
         int paraluesRestants = 5;
         int checkSize = 7;
+        int acumulat = 1;
+        TreeSet<String> auxSet = new TreeSet<>(new StringLengthComparator());
+
         while(paraluesRestants>0 && checkSize>2){
+            Log.d("SEL_LOOP", "paraulesRestants"+paraluesRestants+", checkSize:"+checkSize);
             HashSet<String> aux = mapNumSol.get((checkSize));
             if(aux == null || aux.isEmpty()){
                 checkSize--;
+                acumulat++;
                 continue;
             }
-            int rPos = random.nextInt(aux.size())-1;
+            //int rPos = random.nextInt(aux.size())-1;
+            Set<Integer> valores = setNAleatorios(acumulat, aux.size());
+            Log.d("SEL_LOOP", "valores: "+valores);
             Iterator<String> iterFind = aux.iterator();
-            for (int i = 0; i < rPos; i++) {
-                iterFind.next();
+            int i = 0;
+            while(iter.hasNext() && !valores.isEmpty()) {
+                String found = iterFind.next(); //comprobar no coger la misma
+                if(valores.contains(i)){
+                    Log.d("GAME_INIT", "Paraula solució " + found);
+                    //this.mapWordsSol.put(found, paraluesRestants);
+                    auxSet.add(found);
+                    paraluesRestants--;
+                    acumulat--;
+                    valores.remove(i);
+                }
+                i++;
             }
-            String found = iterFind.next();
-            Log.d("GAME_INIT", "Paraula solució "+found);
-            this.mapWordsSol.put(found, paraluesRestants);
-            paraluesRestants--;
-            if(checkSize>3){
+            if(checkSize>=3){
                 checkSize--;
+                acumulat++;
             }
         }
         this.currentParaulesN = 5-paraluesRestants;
+        Iterator<String> auxSetIter = auxSet.iterator();
+        for(int j=0;j<currentParaulesN;j++){
+            this.mapWordsSol.put(auxSetIter.next(),j);
+        }
         Log.d("GAME_INIT", "mapSolucions" + this.mapWordsSol+ " "+this.currentParaulesN);
 
 
+    }
+    private Set<Integer> setNAleatorios(int n, int max){
+        //Log.d("NRAND", "n"+n+", max"+max);
+        int c = 0;
+        TreeSet<Integer> aux = new TreeSet<>();
+        if(max<n){
+            n=max;
+        }
+        while(c!=n){
+            if(aux.add(random.nextInt(max)))
+                c++;
+        }
+
+        return aux;
     }
     public static boolean esParaulaSolucio(String p1, String p2){
         MapInterficie<Character, Integer> p1char = new UnsortedArrayMap<>(p1.length()),
@@ -187,4 +201,12 @@ public class Game {
     }
 
 
+
+    @Override
+    public String toString(){
+        String aux = "GAME: nºParaules sol "+ this.currentParaulesN+", tamanyMax " + this.tamLLetraMax+"\n"+
+                "\tmapWordSol"+this.mapWordsSol;
+
+        return aux;
+    }
 }
