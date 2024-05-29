@@ -34,13 +34,36 @@ public class Game {
     private HashMap<Character, Integer> mapChars = new HashMap<>();
 
 //numTotalW cantidad de paraules que es poden escriure amb les lletres seleccionades
-    private int tamLLetraMax, currentParaulesN, numTotalW;
+    private int tamLLetraMax, currentParaulesN, numTotalW, contadorBonus, contadorCorrecte;
+
+    public int getContadorCorrecte() {
+        return contadorCorrecte;
+    }
+
+    public void setMapNumSol(HashMap<Integer, HashSet<String>> mapNumSol) {
+        this.mapNumSol = mapNumSol;
+    }
+
+    public void setContadorBonus(int contadorBonus) {
+        this.contadorBonus = contadorBonus;
+    }
+
+    public void setContadorCorrecte(int contadorCorrecte) {
+        this.contadorCorrecte = contadorCorrecte;
+    }
 
     //GETTERS SETTERS
     public HashMap<Character, Integer> getMapChars() {
         return mapChars;
     }
 
+    public int getTamLLetraMax() {
+        return tamLLetraMax;
+    }
+
+    public int getContadorBonus() {
+        return contadorBonus;
+    }
 
     public int getNumTotalW() {
         return numTotalW;
@@ -61,7 +84,7 @@ public class Game {
     public TreeSet<String> getSetFoundWords() {
         return setFoundWords;
     }
-
+//-----------------------------------------CONSTRUCTOR------------------------------------------------
     public Game(int tamLletraMax){
         this.tamLLetraMax = tamLletraMax;
 

@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(interficie);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        //
         // Verificar si todos los permisos están concedidos
         if (!PermissionUtils.arePermissionsGranted(this, permissions)) {
             // Si no están concedidos, solicitar los permisos al usuario
@@ -97,49 +96,6 @@ public class MainActivity extends AppCompatActivity {
 
         startGame();
     }
-
-    /**
-     * Inicialitza el joc
-     */
-    private void startGame(){
-        this.currentGame = new Game(Game.random.nextInt(4)+4);
-        contadorCorrecte = 0 ;
-        actulaitzarTextContador(null);
-        Log.i("START_GAME()", "GAME: "+currentGame);
-        clearSetButtons();
-        num_boto = 0;
-        for (Map.Entry<Character, Integer> entry : currentGame.getMapChars().entrySet()) {
-            Character character = entry.getKey();
-            int count = entry.getValue();
-
-            for (int i = 0; i < count; i++) {
-                charButtons[num_boto].setText(character.toString());
-                num_boto++;
-            }
-        }
-        clearIntento();
-        botons_aleatoris();
-        //borrar anteriors
-        for(int i=0;i<hiddenWords.length;i++){
-            if(hiddenWords[i]==null){
-                break;
-            }
-            for(int j=0;j<hiddenWords[i].length;j++){
-                if(hiddenWords[i][j]==null){
-                    break;
-                }
-                ((ConstraintLayout)hiddenWords[i][j].getParent()).removeView(hiddenWords[i][j]);
-            }
-            hiddenWords[i]=null;
-        }
-        //crear nous
-        Iterator<String> iterSols = currentGame.getMapWordsSol().keySet().iterator();
-        for (int i = 0; i < hiddenWords.length && i<currentGame.getCurrentParaulesN(); i++) {
-            hiddenWords[i]=crearFilaTextViews(R.id.ref15H, iterSols.next().length(), i);
-        }
-
-    }
-
     /**
      * Onclick dels botons de lletres
      * @param v
@@ -251,94 +207,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void btnClear(View v){
-        Button btn = (Button) v;
-        System.out.println("D: pulsado clear");
-
-        clearIntento();
-
-    }
-
-    public void btnSend(View v){
-        Button btn = (Button)v;
-        System.out.println("D: pulsado send");
-        String intro = (String) textViewIntent.getText();
-        actulaitzarTextContador(intro);
-
-        clearIntento();
-    }
-
-    private void  actulaitzarTextContador(String p){
-        boolean conte = false;
-        TreeSet<String> trobades = currentGame.getSetFoundWords();
-
-        if(p != null && !p.equals("")) {
-            if (trobades.contains(p)) {
-                conte = true;
-                mostrarMissatge("Aquesta ja la tens", false);
-            } else if (conteTotesParaules(p)){
-                mostrarMissatge("Paraula vàlida!", false);
-                currentGame.getSetFoundWords().add(p);
-                currentGame.setContadorCorrecte(currentGame.getContadorCorrecte()+1);
-                if(conteParaulesAmagades(p)){
-                    ////////
-                }else{
-                    currentGame.setContadorBonus(currentGame.getContadorBonus() + 1);
-                    bonusButton.setText(String.valueOf(currentGame.getContadorBonus()));
-                }
-            }else{
-                mostrarMissatge("Paraula NO vàlida", false);
-            }
-
-            StringBuilder text = new StringBuilder();
-            Iterator<String> iterator = currentGame.getSetFoundWords().iterator();
-            boolean no_primera = false;
-
-            while (iterator.hasNext()) {
-                String paraula = iterator.next();
-                String sParaula= "";
-
-                if (no_primera){
-                    sParaula=", ";
-                } no_primera = true;
-
-                if (paraula.equals(p) && conte) {
-                    sParaula += "<font color='red'>" + DictReader.getMapAllWords().get(paraula) + "</font>";
-                } else {
-                    sParaula += DictReader.getMapAllWords().get(paraula);
-                }
-                text.append(sParaula);
-            }
-
-            imprimir = "Has encertat (" + currentGame.getContadorCorrecte() + "/" + currentGame.getNumTotalW() + "): " + text.toString();
-
-        }else if (p == null) {
-            imprimir = "Has encertat (" + currentGame.getContadorCorrecte() + "/" + currentGame.getNumTotalW() + "): ";
-        }
-
-        textCont.setText(Html.fromHtml(imprimir, Html.FROM_HTML_MODE_LEGACY));
-    }
-
-    private boolean conteTotesParaules( String p) {
-        HashSet<String> set = currentGame.getMapNumSol().get(p.length());
-        boolean contains = set.contains(p);
-        return contains;
-    }
-
-    private boolean conteParaulesAmagades(String p){
-        Iterator<Map.Entry<String, Integer>> iterator = currentGame.getMapWordsSol().entrySet().iterator();
-
-        while (iterator.hasNext()) {
-            Map.Entry<String, Integer> entry = iterator.next();
-            String key = entry.getKey();
-
-            if (key.equals(p)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void nextTheme(){
         System.out.println("siguiente tema");
     }
@@ -353,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
                 charButtons[j++] = btn;
             }
         }
-        return false;
     }
 
 //----------------------------------------------------AUXILIARS-----------------------------------------------------------
@@ -368,15 +235,6 @@ public class MainActivity extends AppCompatActivity {
     toast.show();
 }
 
-    /**
-     * Rehabilita els botons de lletra i neteja l'intent actual
-     */
-    private void clearIntento() {
-        for(Button b:charButtons){
-            b.setEnabled(!b.getText().equals(""));
-        }
-        textViewIntent.setText("");
-    }
 
 //----------------------------------------------------STAR GAME-----------------------------------------------------------
     /**
@@ -387,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("GAME: "+ currentGame.getTamLLetraMax());
 
         num_boto = 0;
-        Iterator<Map.Entry<Character, Integer>> iterator = currentGame.getSetChars().entrySet().iterator();
+        Iterator<Map.Entry<Character, Integer>> iterator = currentGame.getMapChars().entrySet().iterator();
 
         //Inicialitazació botons cercle
         while (iterator.hasNext()) {
@@ -438,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //--------------------------------------RESTART/BONUS/RANDOM/HELP/-------------------------------------------------------
+    //--------------------------------------BOTONS--------------------------------------------------------------------------
     //-----------------------------------------------RANDOM-----------------------------------------------------------------
     @SuppressLint("SetTextI18n")
     public void btnRandom(View v){
@@ -518,6 +376,106 @@ public class MainActivity extends AppCompatActivity {
         // Mostrar l ’ AlertDialog a la pantalla
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    //-----------------------------------------------SEND-------------------------------------------------------------------
+    public void btnSend(View v){
+        System.out.println("D: pulsado send");
+
+        String intro = (String) textViewIntent.getText();
+        actulaitzarTextContador(intro);
+
+        clearIntento();
+    }
+
+    private void  actulaitzarTextContador(String p){
+        boolean conte = false;
+        TreeSet<String> trobades = currentGame.getSetFoundWords();
+
+        if(p != null && !p.equals("")) {
+            if (trobades.contains(p)) {
+                conte = true;
+                mostrarMissatge("Aquesta ja la tens", false);
+            } else if (conteTotesParaules(p)){
+                mostrarMissatge("Paraula vàlida!", false);
+                currentGame.getSetFoundWords().add(p);
+                currentGame.setContadorCorrecte(currentGame.getContadorCorrecte()+1);
+                if(conteParaulesAmagades(p)){
+                    ////////
+                }else{
+                    currentGame.setContadorBonus(currentGame.getContadorBonus() + 1);
+                    bonusButton.setText(String.valueOf(currentGame.getContadorBonus()));
+                }
+            }else{
+                mostrarMissatge("Paraula NO vàlida", false);
+            }
+
+            StringBuilder text = new StringBuilder();
+            Iterator<String> iterator = currentGame.getSetFoundWords().iterator();
+            boolean no_primera = false;
+
+            while (iterator.hasNext()) {
+                String paraula = iterator.next();
+                String sParaula= "";
+
+                if (no_primera){
+                    sParaula=", ";
+                } no_primera = true;
+
+                if (paraula.equals(p) && conte) {
+                    sParaula += "<font color='red'>" + DictReader.getMapAllWords().get(paraula) + "</font>";
+                } else {
+                    sParaula += DictReader.getMapAllWords().get(paraula);
+                }
+                text.append(sParaula);
+            }
+
+            imprimir = "Has encertat (" + currentGame.getContadorCorrecte() + "/" + currentGame.getNumTotalW() + "): " + text.toString();
+
+        }else if (p == null) {
+            imprimir = "Has encertat (" + currentGame.getContadorCorrecte() + "/" + currentGame.getNumTotalW() + "): ";
+        }
+
+        textCont.setText(Html.fromHtml(imprimir, Html.FROM_HTML_MODE_LEGACY));
+    }
+
+    private boolean conteTotesParaules( String p) {
+        HashSet<String> set = currentGame.getMapNumSol().get(p.length());
+        boolean contains = set.contains(p);
+        return contains;
+    }
+
+    private boolean conteParaulesAmagades(String p){
+        Iterator<Map.Entry<String, Integer>> iterator = currentGame.getMapWordsSol().entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<String, Integer> entry = iterator.next();
+            String key = entry.getKey();
+
+            if (key.equals(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    //-----------------------------------------------CLEAR-------------------------------------------------------------------
+    public void btnClear(View v){
+        System.out.println("D: pulsado clear");
+
+        clearIntento();
+    }
+
+    /**
+     * Rehabilita els botons de lletra i neteja l'intent actual
+     */
+    private void clearIntento() {
+        for(Button b:charButtons){
+            b.setEnabled(!b.getText().equals(""));
+        }
+        textViewIntent.setText("");
     }
 
     //------------------------------------------------------------------PERMISOS---------------------------------------------
