@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
      */
 
     private Game currentGame;
+    private Tema currentTema;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         textCont = findViewById(R.id.TextViewContador);
         bonusButton = findViewById(R.id.bonusButton);
 
+        nextTheme();
         startGame();
     }
     /**
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setText("");
             textView.setTextSize(52);
             textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            textView.setBackgroundColor(Color.parseColor("#53acac"));
+            textView.setBackgroundColor(currentTema.getColor());
             layout.addView(textView); //2
 
             ConstraintSet constraintSet = new ConstraintSet();
@@ -202,7 +204,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void nextTheme(){
-        System.out.println("siguiente tema");
+        currentTema = Tema.getRandomTema();
+        currentTema.applyTema(this);
     }
 
     private void getCharButtons(){
