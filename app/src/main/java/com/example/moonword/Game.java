@@ -76,6 +76,9 @@ public class Game {
     public int getCurrentParaulesN() {
         return currentParaulesN;
     }
+    public void setCurrentParaulesN(int n){
+        this.currentParaulesN = n;
+    }
 
     public HashMap<Integer, HashSet<String>> getMapNumSol() {
         return mapNumSol;
@@ -203,6 +206,19 @@ public class Game {
     }
 
 
+    public boolean hasWon(){
+        return this.currentParaulesN==0;
+    }
+
+    /**
+     * Retorna la posició de una paraula oculta, després o elimina i decrementa les paraules restants
+     * @param w
+     * @return
+     */
+    public int foundHidden(String w){
+        this.currentParaulesN--;
+        return this.mapWordsSol.remove(w);
+    }
 
     private static void addStringToMap(String p, MapInterficie<Character, Integer> map){
         for(char c:p.toCharArray()){

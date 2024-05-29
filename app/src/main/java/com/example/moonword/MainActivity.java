@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         getCharButtons();
         textViewIntent = findViewById(R.id.textViewIntent);
         textCont = findViewById(R.id.TextViewContador);
+        bonusButton = findViewById(R.id.bonusButton);
 
         startGame();
     }
@@ -386,6 +387,11 @@ public class MainActivity extends AppCompatActivity {
         actulaitzarTextContador(intro);
 
         clearIntento();
+
+        if(currentGame.hasWon()){
+            Log.i("GAMELOOP", "HAS GUANYAT");
+
+        }
     }
 
     private void  actulaitzarTextContador(String p){
@@ -400,8 +406,10 @@ public class MainActivity extends AppCompatActivity {
                 mostrarMissatge("Paraula vàlida!", false);
                 currentGame.getSetFoundWords().add(p);
                 currentGame.setContadorCorrecte(currentGame.getContadorCorrecte()+1);
-                if(conteParaulesAmagades(p)){
-                    ////////
+                //if(conteParaulesAmagades(p)){
+                if(currentGame.getMapWordsSol().containsKey(p)){
+                    int pos = currentGame.foundHidden(p);
+                    this.mostraParaula(p, pos);
                 }else{
                     currentGame.setContadorBonus(currentGame.getContadorBonus() + 1);
                     bonusButton.setText(String.valueOf(currentGame.getContadorBonus()));
