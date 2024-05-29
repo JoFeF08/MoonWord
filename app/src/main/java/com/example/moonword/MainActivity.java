@@ -35,8 +35,10 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity {
@@ -68,10 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Button[] charButtons = new Button[7];
     private TextView textViewIntent;
+    private Button bonusButton ;
     private TextView textCont;
     private  int num_boto;
 
-    private int contadorCorrecte;
+    private String imprimir;
 
     private TextView[][] hiddenWords = new TextView[5][];
     /**
@@ -112,50 +115,12 @@ public class MainActivity extends AppCompatActivity {
         getCharButtons();
         textViewIntent = findViewById(R.id.textViewIntent);
         textCont = findViewById(R.id.TextViewContador);
+        bonusButton = findViewById(R.id.bonusButton);
 
         startGame();
     }
 
-    /**
-     * Inicialitza el joc
-     */
-    private void startGame(){
-        this.currentGame = new Game(Game.random.nextInt(4)+4);
-        contadorCorrecte = 0 ;
-        actulaitzarTextContador(null);
-        System.out.println("GAME: "+ currentGame.getTamLLetraMax());
-        clearSetButtons();
-        num_boto = 0;
-        for (Map.Entry<Character, Integer> entry : currentGame.getSetChars().entrySet()) {
-            Character character = entry.getKey();
-            int count = entry.getValue();
 
-            for (int i = 0; i < count; i++) {
-                charButtons[num_boto].setText(character.toString());
-                num_boto++;
-            }
-        }
-        clearIntento();
-        botons_aleatoris();
-        //borrar anteriors
-        for(int i=0;i<hiddenWords.length;i++){
-            if(hiddenWords[i]==null){
-                break;
-            }
-            for(int j=0;j<hiddenWords[i].length;j++){
-                if(hiddenWords[i][j]==null){
-                    break;
-                }
-                ((ConstraintLayout)hiddenWords[i][j].getParent()).removeView(hiddenWords[i][j]);
-            }
-            hiddenWords[i]=null;
-        }
-        //crear nous
-        for (int i = 0; i < hiddenWords.length; i++) {
-            hiddenWords[i]=crearFilaTextViews(R.id.ref15H, i+Game.random.nextInt(3)+1, i);
-        }
-
-    }
 
     /**
      * Onclick dels botons de lletres
@@ -230,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void mostraPrimeraLletra ( String s , int posicio ){
+    private void mostraPrimeraLletra( String s , int posicio ){
         mostraLletraPosicio(s,posicio,0);
     }
 
@@ -241,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void enableViews (int parent ){
+    private void enableViews (int parent){
         ConstraintLayout lay = findViewById(parent);
         int nunFills = lay.getChildCount();
         for (int i = 0; i < nunFills; i++) {
@@ -286,142 +251,74 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void  actulaitzarTextContador(String p){
-        String imprimir = "";
         boolean conte = false;
-        HashMap<Integer, HashSet<String>> paraules = currentGame.getMapNumSol();
         TreeSet<String> trobades = currentGame.getSetFoundWords();
 
-
-        if(p != null) {
+        if(p != null && !p.equals("")) {
             if (trobades.contains(p)) {
                 conte = true;
-            } else if (conteHmapHsetS(paraules,p)){
+                mostrarMissatge("Aquesta ja la tens", false);
+            } else if (conteTotesParaules(p)){
+                mostrarMissatge("Paraula vàlida!", false);
                 currentGame.getSetFoundWords().add(p);
-                contadorCorrecte++;
+                currentGame.setContadorCorrecte(currentGame.getContadorCorrecte()+1);
+                if(conteParaulesAmagades(p)){
+                    ////////
+                }else{
+                    currentGame.setContadorBonus(currentGame.getContadorBonus() + 1);
+                    bonusButton.setText(String.valueOf(currentGame.getContadorBonus()));
+                }
+            }else{
+                mostrarMissatge("Paraula NO vàlida", false);
             }
 
             StringBuilder text = new StringBuilder();
+            Iterator<String> iterator = currentGame.getSetFoundWords().iterator();
+            boolean no_primera = false;
 
-            for (String paraula : currentGame.getSetFoundWords()) {
-                String sParaula;
+            while (iterator.hasNext()) {
+                String paraula = iterator.next();
+                String sParaula= "";
+
+                if (no_primera){
+                    sParaula=", ";
+                } no_primera = true;
+
                 if (paraula.equals(p) && conte) {
-                    sParaula = "<font color='red'>" + paraula + "</font>, ";
+                    sParaula += "<font color='red'>" + DictReader.getMapAllWords().get(paraula) + "</font>";
                 } else {
-                    sParaula = paraula + ", ";
+                    sParaula += DictReader.getMapAllWords().get(paraula);
                 }
                 text.append(sParaula);
             }
 
-            // Construct the output message with the list of words
-            imprimir = "Has encertat (" + contadorCorrecte + "/" + currentGame.getNumTotalW() + "): " + text.toString();
+            imprimir = "Has encertat (" + currentGame.getContadorCorrecte() + "/" + currentGame.getNumTotalW() + "): " + text.toString();
 
         }else if (p == null) {
-            imprimir = "Has encertat (" + contadorCorrecte + "/" + currentGame.getNumTotalW() + "): ";
-        } else {
-            imprimir = (String) textCont.getText();
+            imprimir = "Has encertat (" + currentGame.getContadorCorrecte() + "/" + currentGame.getNumTotalW() + "): ";
         }
 
-            textCont.setText(Html.fromHtml(imprimir, Html.FROM_HTML_MODE_LEGACY));
+        textCont.setText(Html.fromHtml(imprimir, Html.FROM_HTML_MODE_LEGACY));
     }
 
-    private boolean conteHmapHsetS(HashMap<Integer, HashSet<String>> paraules, String p) {
-        for (Map.Entry<Integer, HashSet<String>> entry : paraules.entrySet()) {
-            HashSet<String> set = entry.getValue();
-            if (set.contains(p)) {
+    private boolean conteTotesParaules( String p) {
+        HashSet<String> set = currentGame.getMapNumSol().get(p.length());
+        boolean contains = set.contains(p);
+        return contains;
+    }
+
+    private boolean conteParaulesAmagades(String p){
+        Iterator<Map.Entry<String, Integer>> iterator = currentGame.getMapWordsSol().entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<String, Integer> entry = iterator.next();
+            String key = entry.getKey();
+
+            if (key.equals(p)) {
                 return true;
             }
         }
         return false;
-    }
-
-    private boolean conteTreeS(HashMap<Integer, HashSet<String>> paraules, String p) {
-        for (Map.Entry<Integer, HashSet<String>> entry : paraules.entrySet()) {
-            HashSet<String> set = entry.getValue();
-            if (set.contains(p)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * Rehabilita els botons de lletra i neteja l'intent actual
-     */
-    private void clearIntento() {
-        for(Button b:charButtons){
-            b.setEnabled(!b.getText().equals(""));
-        }
-        textViewIntent.setText("");
-    }
-
-    private void clearSetButtons() {
-        for(Button b:charButtons) {
-            b.setEnabled(true);
-            b.setText("");
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    public void btnRandom(View v){
-        Button btn = (Button)v;
-        System.out.println("D: pulsado Random");
-        botons_aleatoris();
-    }
-
-    private void botons_aleatoris(){
-        char[] letras = new char[num_boto];
-        for (int i = 0; i < letras.length; i++) {
-            letras[i] = charButtons[i].getText().charAt(0);
-        }
-        for (int i = letras.length-1; i>1 ; i--) {
-            int j = Game.random.nextInt(i-1);
-            char aux = letras[i];
-            letras[i]=letras[j];
-            letras[j]=aux;
-        }
-        for (int i = 0; i < letras.length; i++) {
-            charButtons[i].setText(""+letras[i]);
-        }
-
-        clearIntento();
-    }
-    public void btnBonus(View v){
-        Button btn = (Button)v;
-        System.out.println("D: pulsado bonus");
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(" < encertades i possibles >");
-        builder.setMessage(" < la llista de trobades >");
-        // Un botó OK per tancar la finestra
-        builder.setPositiveButton(" OK ",null);
-        // Mostrar l ’ AlertDialog a la pantalla
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    public void btnHint(View v){
-        Button btn = (Button)v;
-        System.out.println("D: pulsado ayuda");
-        mostrarMissatge("AYUDA", false);
-    }
-
-    public void btnRestart(View v){
-        enableViews(R.id.parentConstraint);
-        Button btn = (Button)v;
-        System.out.println("D: pulsado restart");
-        mostrarMissatge("REINICIAR", true);
-        nextTheme();
-        startGame();
-        clearIntento();
-    }
-
-    private void mostrarMissatge(String s, boolean llarg){
-        Context context = getApplicationContext ();
-        int duration = llarg ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, s, duration) ;
-        toast.show();
     }
 
     private void nextTheme(){
@@ -440,57 +337,222 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//----------------------------------------------------AUXILIARS-----------------------------------------------------------
+/**
+ * Mostra el missatge pasat per parametre String
+ * */
+    private void mostrarMissatge(String s, boolean llarg){
+    Context context = getApplicationContext ();
+    int duration = llarg ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
 
-    // Verificar y solicitar permisos de cámara
-    private void checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    REQUEST_CAMERA_PERMISSION);
-        } else {
-            // Permiso ya concedido, puedes abrir la cámara
+    Toast toast = Toast.makeText(context, s, duration) ;
+    toast.show();
+}
+
+    /**
+     * Rehabilita els botons de lletra i neteja l'intent actual
+     */
+    private void clearIntento() {
+        for(Button b:charButtons){
+            b.setEnabled(!b.getText().equals(""));
         }
+        textViewIntent.setText("");
+    }
+
+//----------------------------------------------------STAR GAME-----------------------------------------------------------
+    /**
+     * Inicialitza el joc
+     */
+    private void startGame(){
+        this.currentGame = new Game(Game.random.nextInt(4)+4);
+        System.out.println("GAME: "+ currentGame.getTamLLetraMax());
+
+        num_boto = 0;
+        Iterator<Map.Entry<Character, Integer>> iterator = currentGame.getSetChars().entrySet().iterator();
+
+        //Inicialitazació botons cercle
+        while (iterator.hasNext()) {
+            Map.Entry<Character, Integer> entry = iterator.next();
+            Character character = entry.getKey();
+            int count = entry.getValue();
+
+            for (int i = 0; i < count; i++) {
+                charButtons[num_boto].setEnabled(true);
+                charButtons[num_boto].setText(character.toString());
+
+                num_boto++;
+            }
+        }
+
+        inicialitzaBotonsiContadors();
+        botons_aleatoris();
+
+        //borrar anteriors paraules cuadro
+        for(int i=0; i < hiddenWords.length; i++){
+            if(hiddenWords[i]==null){
+                break;
+            }
+            for(int j=0; j < hiddenWords[i].length; j++){
+                if(hiddenWords[i][j]==null){
+                    break;
+                }
+                ((ConstraintLayout)hiddenWords[i][j].getParent()).removeView(hiddenWords[i][j]);
+            }
+            hiddenWords[i]=null;
+        }
+        //crear nous paraules cuadro
+        for (int i = 0; i < hiddenWords.length; i++) {
+            hiddenWords[i]=crearFilaTextViews(R.id.ref15H, i+Game.random.nextInt(3)+1, i);
+        }
+
+    }
+
+    private void inicialitzaBotonsiContadors(){
+        currentGame.setContadorCorrecte(0);
+
+        currentGame.setContadorBonus(0);
+        bonusButton.setText("0");
+
+        actulaitzarTextContador(null);
+
+        clearIntento();
+    }
+
+
+    //--------------------------------------RESTART/BONUS/RANDOM/HELP/-------------------------------------------------------
+    //-----------------------------------------------RANDOM-----------------------------------------------------------------
+    @SuppressLint("SetTextI18n")
+    public void btnRandom(View v){
+        System.out.println("D: pulsado Random");
+
+        botons_aleatoris();
+    }
+
+    private void botons_aleatoris(){
+        char[] letras = new char[num_boto];
+        for (int i = 0; i < letras.length; i++) {
+            letras[i] = charButtons[i].getText().charAt(0);
+        }
+        for (int i = letras.length-1; i>1 ; i--) {
+            int j = Game.random.nextInt(i-1);
+            char aux = letras[i];
+            letras[i] = letras[j];
+            letras[j] = aux;
+        }
+        for (int i = 0; i < letras.length; i++) {
+            charButtons[i].setText(""+letras[i]);
+        }
+
+        clearIntento();
+    }
+
+//-----------------------------------------------RESTART-----------------------------------------------------------------
+    public void btnRestart(View v){
+        System.out.println("D: pulsado restart");
+        mostrarMissatge("REINICIAR", true);
+
+        nextTheme();
+        startGame();
+
+    }
+
+    //-----------------------------------------------HELP-----------------------------------------------------------------
+
+    public void btnHint(View v){
+        System.out.println("D: pulsado ayuda");
+
+
+        if(currentGame.getContadorBonus() >= 5){
+            mostrarMissatge("AJUDA", false);
+            currentGame.setContadorBonus(currentGame.getContadorBonus()-5);
+            bonusButton.setText(String.valueOf(currentGame.getContadorBonus()));
+            mostraPrimeraLletraAleatori();
+
+        }else{
+            mostrarMissatge("NECESSITES ALMENYS 5 BONUS", false);
+        }
+
+    }
+
+    private void mostraPrimeraLletraAleatori(){
+        List<String> keyList = new ArrayList<>(currentGame.getMapWordsSol().keySet());
+
+        Random random = new Random();
+        int pos = random.nextInt(keyList.size());
+
+        mostraPrimeraLletra(keyList.get(pos),pos);
+    }
+
+    //-----------------------------------------------BONUS-----------------------------------------------------------------
+    public void btnBonus(View v){
+        System.out.println("D: pulsado bonus");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        String message = "Punts de bonus: " + currentGame.getContadorBonus();
+        builder.setTitle(message);
+
+        builder.setMessage(imprimir);
+
+        // Un botó OK per tancar la finestra
+        builder.setPositiveButton(" OK ",null);
+
+        // Mostrar l ’ AlertDialog a la pantalla
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    //------------------------------------------------------------------PERMISOS---------------------------------------------
+// Verificar y solicitar permisos de cámara
+private void checkCameraPermission() {
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                REQUEST_CAMERA_PERMISSION);
+    } else {
+        // Permiso ya concedido, puedes abrir la cámara
     }
 }
- class PermissionUtils {
+}
 
-    // Método para comprobar si todos los permisos especificados están concedidos
-    public static boolean arePermissionsGranted(Context context, String[] permissions) {
-        // Verificar para dispositivos con Android 6.0 (API 23) o superior, ya que los permisos se solicitan dinámicamente desde esta versión
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            for (String permission : permissions) {
-                // Verificar si el permiso actual no está concedido
-                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    // Si alguno de los permisos no está concedido, retornar false
-                    return false;
+    class PermissionUtils {
+
+        // Método para comprobar si todos los permisos especificados están concedidos
+        public static boolean arePermissionsGranted(Context context, String[] permissions) {
+            // Verificar para dispositivos con Android 6.0 (API 23) o superior, ya que los permisos se solicitan dinámicamente desde esta versión
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                for (String permission : permissions) {
+                    // Verificar si el permiso actual no está concedido
+                    if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                        // Si alguno de los permisos no está concedido, retornar false
+                        return false;
+                    }
                 }
             }
+            // Si todos los permisos están concedidos, retornar true
+            return true;
         }
-        // Si todos los permisos están concedidos, retornar true
-        return true;
-    }
 
-    // Método para solicitar permisos al usuario si no están concedidos
-    public static void requestPermissions(Activity activity, String[] permissions, int requestCode) {
-        // Listar permisos que necesitan ser solicitados
-        List<String> permissionsToRequest = new ArrayList<>();
+        // Método para solicitar permisos al usuario si no están concedidos
+        public static void requestPermissions(Activity activity, String[] permissions, int requestCode) {
+            // Listar permisos que necesitan ser solicitados
+            List<String> permissionsToRequest = new ArrayList<>();
 
-        // Verificar para cada permiso si no está concedido
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
-                // Agregar permiso a la lista de permisos a solicitar
-                permissionsToRequest.add(permission);
+            // Verificar para cada permiso si no está concedido
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+                    // Agregar permiso a la lista de permisos a solicitar
+                    permissionsToRequest.add(permission);
+                }
+            }
+
+            // Convertir lista de permisos a un array de Strings
+            String[] permissionsArray = new String[permissionsToRequest.size()];
+            permissionsArray = permissionsToRequest.toArray(permissionsArray);
+
+            // Solicitar permisos al usuario (solo si hay permisos que solicitar)
+            if (permissionsArray.length > 0) {
+                ActivityCompat.requestPermissions(activity, permissionsArray, requestCode);
             }
         }
-
-        // Convertir lista de permisos a un array de Strings
-        String[] permissionsArray = new String[permissionsToRequest.size()];
-        permissionsArray = permissionsToRequest.toArray(permissionsArray);
-
-        // Solicitar permisos al usuario (solo si hay permisos que solicitar)
-        if (permissionsArray.length > 0) {
-            ActivityCompat.requestPermissions(activity, permissionsArray, requestCode);
-        }
     }
-}
