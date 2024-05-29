@@ -255,6 +255,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        //deshabilitar botons no usats
+        for (int i=num_boto; i<charButtons.length;i++){
+            charButtons[i].setText("");
+            charButtons[i].setEnabled(false);
+        }
+
         inicialitzaBotonsiContadors();
         botons_aleatoris();
 
@@ -404,9 +410,9 @@ public class MainActivity extends AppCompatActivity {
                 currentGame.setContadorCorrecte(currentGame.getContadorCorrecte()+1);
 
                 if(currentGame.conteParaulesAmagades(p)){
-                  int pos = currentGame.getMapWordsSol().get(p);
-                 //   mostraParaula(p,pos);
-                  //  System.out.println("p: " + p + "  pos: "+pos);
+                    int pos = currentGame.foundHidden(p);
+                    mostraParaula(p,pos);
+                    Log.d("GAMELOOP", "p: " + p + "  pos: "+pos);
                 }else{
 
                     currentGame.setContadorBonus(currentGame.getContadorBonus() + 1);
@@ -454,7 +460,7 @@ private StringBuilder generaText(boolean conte, String p){
 
     private void mostraParaula ( String s , int posicio ){
         TextView[] panells = hiddenWords[posicio];
-        char[] lletres = s.toUpperCase().toCharArray();
+        char[] lletres = DictReader.getParaulaAccent(s).toUpperCase().toCharArray();
         for (int i = 0; i < s.length() && i<hiddenWords[posicio].length; i++) {
             panells[i].setText(""+lletres[i]);
         }

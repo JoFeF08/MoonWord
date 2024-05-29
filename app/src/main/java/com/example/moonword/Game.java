@@ -80,6 +80,7 @@ public class Game {
         this.currentParaulesN = n;
     }
 
+
     public HashMap<Integer, HashSet<String>> getMapNumSol() {
         return mapNumSol;
     }
@@ -137,7 +138,7 @@ public class Game {
         TreeSet<String> auxSet = new TreeSet<>(new StringLengthComparator());
 
         while(paraluesRestants>0 && checkSize>2){
-            Log.d("SEL_LOOP", "paraulesRestants"+paraluesRestants+", checkSize:"+checkSize);
+            //Log.d("SEL_LOOP", "paraulesRestants"+paraluesRestants+", checkSize:"+checkSize);
             HashSet<String> aux = mapNumSol.get((checkSize));
             if(aux == null || aux.isEmpty()){
                 checkSize--;
@@ -210,6 +211,9 @@ public class Game {
      * Mira si p és una paraula de les amagades
      * */
     public boolean conteParaulesAmagades(String p){
+        return this.mapWordsSol.containsKey(p);
+    }
+    /**public boolean conteParaulesAmagades(String p){
         Iterator<Map.Entry<String, Integer>> iterator = mapWordsSol.entrySet().iterator();
 
         while (iterator.hasNext()) {
@@ -221,7 +225,7 @@ public class Game {
             }
         }
         return false;
-    }
+    }**/
     /**
      * Mira si maWordsSol mapping amb totes les paraules possibles amb les lletres d'aquesta partida
      * */

@@ -65,6 +65,8 @@ public class DictReader {
         return mapAllWords;
     }
 
-
+    public static String getParaulaAccent(String p){
+        return DictReader.mapAllWords.get(p);
+    }
 
 }
