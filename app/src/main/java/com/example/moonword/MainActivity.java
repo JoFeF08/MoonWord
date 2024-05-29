@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         getCharButtons();
         textViewIntent = findViewById(R.id.textViewIntent);
         textCont = findViewById(R.id.TextViewContador);
+        bonusButton = findViewById(R.id.bonusButton);
 
         startGame();
     }
@@ -398,8 +399,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if(currentGame.conteParaulesAmagades(p)){
                   int pos = currentGame.getMapWordsSol().get(p);
-                    mostraParaula(p,pos);
-                    System.out.println("p: " + p + "  pos: "+pos);
+                 //   mostraParaula(p,pos);
+                  //  System.out.println("p: " + p + "  pos: "+pos);
                 }else{
 
                     currentGame.setContadorBonus(currentGame.getContadorBonus() + 1);
