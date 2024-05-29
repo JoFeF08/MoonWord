@@ -160,14 +160,7 @@ public class MainActivity extends AppCompatActivity {
         return textViews;
     }
 
-    private void mostraParaula ( String s , int posicio ){
-        TextView[] panells = hiddenWords[posicio];
-        char[] lletres = s.toUpperCase().toCharArray();
-        for (int i = 0; i < s.length() && i<hiddenWords[posicio].length; i++) {
-            panells[i].setText(""+lletres[i]);
-        }
 
-    }
 
     private void mostraPrimeraLletra( String s , int posicio ){
         mostraLletraPosicio(s,posicio,0);
@@ -390,47 +383,34 @@ public class MainActivity extends AppCompatActivity {
 
     private void  actulaitzarTextContador(String p){
         boolean conte = false;
-        TreeSet<String> trobades = currentGame.getSetFoundWords();
 
         if(p != null && !p.equals("")) {
-            if (trobades.contains(p)) {
+
+            if (currentGame.conteParaulesEncertades(p)) {
                 conte = true;
                 mostrarMissatge("Aquesta ja la tens", false);
-            } else if (conteTotesParaules(p)){
+
+            } else if (currentGame.conteParaulesPossibles(p)){
                 mostrarMissatge("Paraula vàlida!", false);
+
                 currentGame.getSetFoundWords().add(p);
                 currentGame.setContadorCorrecte(currentGame.getContadorCorrecte()+1);
-                if(conteParaulesAmagades(p)){
-                    ////////
+
+                if(currentGame.conteParaulesAmagades(p)){
+                  int pos = currentGame.getMapWordsSol().get(p);
+                    mostraParaula(p,pos);
+                    System.out.println("p: " + p + "  pos: "+pos);
                 }else{
+
                     currentGame.setContadorBonus(currentGame.getContadorBonus() + 1);
                     bonusButton.setText(String.valueOf(currentGame.getContadorBonus()));
                 }
+
             }else{
                 mostrarMissatge("Paraula NO vàlida", false);
             }
 
-            StringBuilder text = new StringBuilder();
-            Iterator<String> iterator = currentGame.getSetFoundWords().iterator();
-            boolean no_primera = false;
-
-            while (iterator.hasNext()) {
-                String paraula = iterator.next();
-                String sParaula= "";
-
-                if (no_primera){
-                    sParaula=", ";
-                } no_primera = true;
-
-                if (paraula.equals(p) && conte) {
-                    sParaula += "<font color='red'>" + DictReader.getMapAllWords().get(paraula) + "</font>";
-                } else {
-                    sParaula += DictReader.getMapAllWords().get(paraula);
-                }
-                text.append(sParaula);
-            }
-
-            imprimir = "Has encertat (" + currentGame.getContadorCorrecte() + "/" + currentGame.getNumTotalW() + "): " + text.toString();
+            imprimir = "Has encertat (" + currentGame.getContadorCorrecte() + "/" + currentGame.getNumTotalW() + "): " +   generaText(conte, p).toString();
 
         }else if (p == null) {
             imprimir = "Has encertat (" + currentGame.getContadorCorrecte() + "/" + currentGame.getNumTotalW() + "): ";
@@ -439,27 +419,39 @@ public class MainActivity extends AppCompatActivity {
         textCont.setText(Html.fromHtml(imprimir, Html.FROM_HTML_MODE_LEGACY));
     }
 
-    private boolean conteTotesParaules( String p) {
-        HashSet<String> set = currentGame.getMapNumSol().get(p.length());
-        boolean contains = set.contains(p);
-        return contains;
-    }
+private StringBuilder generaText(boolean conte, String p){
+        StringBuilder text = new StringBuilder();
 
-    private boolean conteParaulesAmagades(String p){
-        Iterator<Map.Entry<String, Integer>> iterator = currentGame.getMapWordsSol().entrySet().iterator();
+        Iterator<String> iterator = currentGame.getSetFoundWords().iterator();
+        boolean no_primera = false;
 
         while (iterator.hasNext()) {
-            Map.Entry<String, Integer> entry = iterator.next();
-            String key = entry.getKey();
+            String paraula = iterator.next();
+            String sParaula= "";
 
-            if (key.equals(p)) {
-                return true;
+            if (no_primera){
+                sParaula=", ";
             }
+            no_primera = true;
+
+            if (paraula.equals(p) && conte) {
+                sParaula += "<font color='red'>" + DictReader.getMapAllWords().get(paraula) + "</font>";
+
+            } else {
+                sParaula += DictReader.getMapAllWords().get(paraula);
+            }
+            text.append(sParaula);
         }
-        return false;
+    return text;
     }
 
-
+    private void mostraParaula ( String s , int posicio ){
+        TextView[] panells = hiddenWords[posicio];
+        char[] lletres = s.toUpperCase().toCharArray();
+        for (int i = 0; i < s.length() && i<hiddenWords[posicio].length; i++) {
+            panells[i].setText(""+lletres[i]);
+        }
+    }
 
     //-----------------------------------------------CLEAR-------------------------------------------------------------------
     public void btnClear(View v){
