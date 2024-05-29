@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
         String message = "Punts de bonus: " + currentGame.getContadorBonus();
         builder.setTitle(message);
 
-        builder.setMessage(imprimir);
+        builder.setMessage(Html.fromHtml(imprimir, Html.FROM_HTML_MODE_LEGACY));
 
         // Un botó OK per tancar la finestra
         builder.setPositiveButton(" OK ",null);
