@@ -1,0 +1,30 @@
+Index: app/src/main/java/com/example/moonword/Game.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.moonword;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.HashMap;\r\nimport java.util.HashSet;\r\nimport java.util.Iterator;\r\nimport java.util.Map;\r\nimport java.util.Random;\r\nimport java.util.Set;\r\nimport java.util.TreeSet;\r\n\r\nimport SetMap.Map.MapInterficie;\r\nimport SetMap.Map.UnsortedArrayMap;\r\nimport SetMap.Set.Pair;\r\nimport SetMap.Set.SetInterficie;\r\n\r\npublic class Game {\r\n\r\n    /**\r\n     * static de moment, idea de instanciar Game, per joc\r\n     */\r\n    public static final char[] abecedari = \"abcdefghijklmnopqrstuvwxyzç\".toCharArray();\r\n    public static final Random random = new Random();\r\n\r\n    private HashMap<Integer, HashSet<String>> mapNumSol;\r\n    private HashMap<String, Integer> mapWordsSol;\r\n    private TreeSet<String> setFoundWords;\r\n\r\n    private HashMap<Character, Integer> setChars = new HashMap<>();\r\n    private int tamLLetraMax;\r\n\r\n\r\n    public Game(int tamLletraMax){\r\n        this.tamLLetraMax = tamLletraMax;\r\n\r\n        //obtenir paraula aleatoria tamany\r\n        Set<String> paraulesMax = DictReader.getMapNumWords().get(tamLletraMax);\r\n        int tamSet = paraulesMax.size();\r\n        int sel = random.nextInt(tamSet);\r\n        Iterator<String> iter = paraulesMax.iterator();\r\n        for(int i=0;i<sel-1;i++){\r\n            iter.next();\r\n        }\r\n        String pSel = iter.next();\r\n        System.out.println(\"GAME: paraula molde \"+pSel);\r\n\r\n        //initcializar sets i maps\r\n        setChars = new HashMap<>();\r\n        addStringToMap(pSel, setChars);\r\n        setFoundWords = new TreeSet<>();\r\n        mapNumSol = new HashMap<>();\r\n        mapWordsSol = new HashMap<>();\r\n\r\n        System.out.println(\"setChars=\"+setChars);\r\n\r\n        //emplenar totes les paraules posibles\r\n        for (int i = 3; i <= pSel.length(); i++) {\r\n            HashSet<String> aux = new HashSet<>();\r\n            HashSet<String> allW = DictReader.getMapNumWords().get(i);\r\n\r\n            //usa el iterator\r\n            for (String s : allW) {\r\n                if (esParaulaSolucio(pSel, s)) {\r\n                    aux.add(s);\r\n                }\r\n            }\r\n            System.out.println(aux);\r\n            mapNumSol.put(i, aux);\r\n        }\r\n\r\n\r\n\r\n    }\r\n    public static boolean esParaulaSolucio(String p1, String p2){\r\n        MapInterficie<Character, Integer> p1char = new UnsortedArrayMap<>(p1.length()),\r\n                p2char = new UnsortedArrayMap<>(p2.length());\r\n        addStringToMap(p1, p1char);\r\n        addStringToMap(p2, p2char);\r\n        Iterator<Pair<Character, Integer>> p2Iter = p2char.iterator();\r\n        while(p2Iter.hasNext()){\r\n            char c = p2Iter.next().getKey();\r\n\r\n            if(p1char.get(c)==null || !p2char.get(c).equals(p1char.get(c))){\r\n                return false;\r\n            }\r\n        }\r\n        return true;\r\n    }\r\n\r\n\r\n\r\n    private static void addStringToMap(String p, MapInterficie<Character, Integer> map){\r\n        for(char c:p.toCharArray()){\r\n            if(map.get(c)==null){\r\n                map.put(c,1);\r\n            }else{\r\n                map.put(c,map.get(c)+1);\r\n            }\r\n        }\r\n    }\r\n    private static void addStringToMap(String p, Map<Character, Integer> map){\r\n        for(char c:p.toCharArray()){\r\n            if(map.get(c)==null){\r\n                map.put(c,1);\r\n            }else{\r\n                map.put(c,map.get(c)+1);\r\n            }\r\n        }\r\n    }\r\n\r\n    public int getTamLLetraMax(){\r\n        return tamLLetraMax;\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/moonword/Game.java b/app/src/main/java/com/example/moonword/Game.java
+--- a/app/src/main/java/com/example/moonword/Game.java	(revision 767038fd273ab6471a54cc728c4c781ba4fdd766)
++++ b/app/src/main/java/com/example/moonword/Game.java	(date 1716457535131)
+@@ -1,8 +1,8 @@
+ package com.example.moonword;
+ 
+ import java.util.ArrayList;
+-import java.util.HashMap;
+ import java.util.HashSet;
++import java.util.HashMap;
+ import java.util.Iterator;
+ import java.util.Map;
+ import java.util.Random;
+@@ -98,7 +98,8 @@
+             }
+         }
+     }
+-    private static void addStringToMap(String p, Map<Character, Integer> map){
++
++    private static void addStringToMap(String p, HashMap<Character, Integer> map){
+         for(char c:p.toCharArray()){
+             if(map.get(c)==null){
+                 map.put(c,1);

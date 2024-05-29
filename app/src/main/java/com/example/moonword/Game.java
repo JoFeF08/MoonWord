@@ -34,14 +34,14 @@ public class Game {
     private HashMap<Character, Integer> mapChars = new HashMap<>();
 
 //numTotalW cantidad de paraules que es poden escriure amb les lletres seleccionades
+//contadorBonus catidad de punts bonus acumulats
+//numTotalW cantidad de paraules encertades
     private int tamLLetraMax, currentParaulesN, numTotalW, contadorBonus, contadorCorrecte;
 
+
+    //*******************************GETTERS SETTERS************************************************
     public int getContadorCorrecte() {
         return contadorCorrecte;
-    }
-
-    public void setMapNumSol(HashMap<Integer, HashSet<String>> mapNumSol) {
-        this.mapNumSol = mapNumSol;
     }
 
     public void setContadorBonus(int contadorBonus) {
@@ -205,6 +205,40 @@ public class Game {
         return true;
     }
 
+    //***************************MIRAR SI SON SOLUCIO***********************************************
+    /**
+     * Mira si p és una paraula de les amagades
+     * */
+    public boolean conteParaulesAmagades(String p){
+        Iterator<Map.Entry<String, Integer>> iterator = mapWordsSol.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<String, Integer> entry = iterator.next();
+            String key = entry.getKey();
+
+            if (key.equals(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * Mira si maWordsSol mapping amb totes les paraules possibles amb les lletres d'aquesta partida
+     * */
+    public boolean conteParaulesPossibles( String p) {
+        HashSet<String> set = mapNumSol.get(p.length());
+        boolean contains = set.contains(p);
+        return contains;
+    }
+
+
+    /**
+     * Mira si maWordsSol mapping amb totes les paraules possibles amb les lletres d'aquesta partida
+     * */
+    public boolean conteParaulesEncertades( String p) {
+        return setFoundWords.contains(p);
+    }
+//**************************************************************************************************
 
     public boolean hasWon(){
         return this.currentParaulesN==0;
