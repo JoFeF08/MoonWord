@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void startGame(){
         this.currentGame = new Game(Game.random.nextInt(4)+4);
-        System.out.println("GAME: "+ currentGame.getTamLLetraMax());
+        Log.i("START_GAME()", currentGame.toString());
 
         num_boto = 0;
         Iterator<Map.Entry<Character, Integer>> iterator = currentGame.getMapChars().entrySet().iterator();
@@ -271,9 +271,10 @@ public class MainActivity extends AppCompatActivity {
             }
             hiddenWords[i]=null;
         }
-        //crear nous paraules cuadro
-        for (int i = 0; i < hiddenWords.length; i++) {
-            hiddenWords[i]=crearFilaTextViews(R.id.ref15H, i+Game.random.nextInt(3)+1, i);
+        //crear nous
+        Iterator<String> iterSols = currentGame.getMapWordsSol().keySet().iterator();
+        for (int i = 0; i < hiddenWords.length && i<currentGame.getCurrentParaulesN(); i++) {
+            hiddenWords[i]=crearFilaTextViews(R.id.ref15H, iterSols.next().length(), i);
         }
 
     }

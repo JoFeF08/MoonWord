@@ -146,13 +146,13 @@ public class Game {
             }
             //int rPos = random.nextInt(aux.size())-1;
             Set<Integer> valores = setNAleatorios(acumulat, aux.size());
-            Log.d("SEL_LOOP", "valores: "+valores);
+            //Log.d("SEL_LOOP", "valores: "+valores);
             Iterator<String> iterFind = aux.iterator();
             int i = 0;
             while(iter.hasNext() && !valores.isEmpty()) {
                 String found = iterFind.next(); //comprobar no coger la misma
                 if(valores.contains(i)){
-                    Log.d("GAME_INIT", "Paraula solució " + found);
+                    //Log.d("GAME_INIT", "Paraula solució " + found);
                     //this.mapWordsSol.put(found, paraluesRestants);
                     auxSet.add(found);
                     paraluesRestants--;
@@ -171,7 +171,7 @@ public class Game {
         for(int j=0;j<currentParaulesN;j++){
             this.mapWordsSol.put(auxSetIter.next(),j);
         }
-        Log.d("GAME_INIT", "mapSolucions" + this.mapWordsSol+ " "+this.currentParaulesN);
+        //Log.d("GAME_INIT", "mapSolucions" + this.mapWordsSol+ " "+this.currentParaulesN);
 
 
     }
