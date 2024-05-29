@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         }
         lay.setEnabled(true);
     }
-    private void disableViews (int parent ){
+    private void disableViews (@IdRes int parent ){
         ConstraintLayout lay = findViewById(parent);
         int nunFills = lay.getChildCount();
         for (int i = 0; i < nunFills; i++) {
@@ -390,6 +390,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(currentGame.hasWon()){
             Log.i("GAMELOOP", "HAS GUANYAT");
+            disableViews(R.id.parentConstraint);
 
         }
     }
