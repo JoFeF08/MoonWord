@@ -535,6 +535,7 @@ public class MainActivity extends AppCompatActivity {
     //------------------------------------------------------------------CAMARA------------------------------
     public void tomarFoto(View v){
         Log.d("TOMAR_FOTO()", "pulsat");
+        Log.i("TOMAR_FOTO()", "camara existente: "+getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY));
         checkCameraPermission();
         Intent fotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if(fotoIntent.resolveActivity(getPackageManager()) != null){
