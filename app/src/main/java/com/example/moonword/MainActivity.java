@@ -108,6 +108,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Log.e("PARAULASOL", ""+Game.esParaulaSolucio("dau", "duta"));
+        Log.e("PARAULASOL", ""+Game.esParaulaSolucio("duta", "dau"));
+        Log.e("PARAULASOL", ""+Game.esParaulaSolucio("pantala", "ala"));
+
 
         nextTheme();
         startGame();

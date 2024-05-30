@@ -119,7 +119,9 @@ public class Game {
             HashSet<String> allW = DictReader.getMapNumWords().get(i);
 
             //usa el iterator
-            for (String s : allW) {
+            Iterator<String> iterAllW = allW.iterator();
+            while (iterAllW.hasNext()) {
+                String s = iterAllW.next();
                 if (esParaulaSolucio(pSel, s)) {
                     if(aux.add(s)) {
                         //Calcular nombre de paraules possibles amb les lletres
@@ -194,6 +196,13 @@ public class Game {
 
         return aux;
     }
+
+    /**
+     *
+     * @param p1 molde
+     * @param p2 comprovar
+     * @return
+     */
     public static boolean esParaulaSolucio(String p1, String p2){
         MapInterficie<Character, Integer> p1char = new UnsortedArrayMap<>(p1.length()),
                 p2char = new UnsortedArrayMap<>(p2.length());
@@ -203,7 +212,7 @@ public class Game {
         while(p2Iter.hasNext()){
             char c = p2Iter.next().getKey();
 
-            if(p1char.get(c)==null || !p2char.get(c).equals(p1char.get(c))){
+            if(p1char.get(c)==null || p2char.get(c).compareTo(p1char.get(c))>0){
                 return false;
             }
         }
@@ -222,8 +231,10 @@ public class Game {
      * */
     public boolean conteParaulesPossibles( String p) {
         HashSet<String> set = mapNumSol.get(p.length());
-        boolean contains = set.contains(p);
-        return contains;
+        if(set==null){
+            return false;
+        }
+        return set.contains(p);
     }
 
 
