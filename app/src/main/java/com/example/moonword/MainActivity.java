@@ -255,12 +255,14 @@ public class MainActivity extends AppCompatActivity {
     private void startGame(){
         int carryBonus;
         if (this.currentGame == null){
-            carryBonus=0;
+            carryBonus = 0;
         }else{
             carryBonus = this.currentGame.getContadorBonus();
         }
         this.currentGame = new Game(Game.random.nextInt(4)+4); //entre 7 y 3
+
         this.currentGame.setContadorBonus(carryBonus);
+        bonusButton.setText(carryBonus + "");
 
         Log.i("START_GAME()", currentGame.toString());
 
