@@ -99,7 +99,7 @@ public class Game {
         int tamSet = DictReader.getSizeNumWords(tamLletraMax);
         int sel = random.nextInt(tamSet);
         Iterator<String> iter = paraulesMax.iterator();
-        Log.d("GAME_INIT", "selRandom: "+sel+", size:" +paraulesMax.size()+",  tamSet:"+tamSet+", l:"+tamLletraMax);
+        Log.d("GAME_INIT", "selRandom: "+sel+", size:" + paraulesMax.size()+",  tamSet:"+tamSet+", l:"+tamLletraMax);
         for(int i=0;i<sel-1;i++){
             iter.next();
         }
