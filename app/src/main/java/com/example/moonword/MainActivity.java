@@ -189,12 +189,12 @@ public class MainActivity extends AppCompatActivity {
 
         char lletra;
         if (majuscula){
-            lletra= s.toUpperCase().charAt(posicio);
+            lletra= s.toUpperCase().charAt(n_lletra);
         } else{
-            lletra= s.toLowerCase().charAt(posicio);
+            lletra= s.toLowerCase().charAt(n_lletra);
         }
 
-        panells[n_lletra].setText(""+lletra);
+        panells[posicio].setText(""+lletra);
     }
 
 
