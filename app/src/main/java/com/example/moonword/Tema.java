@@ -24,8 +24,8 @@ public class Tema {
     private static Tema nadal3 = new Tema(R.drawable.ciervo, R.drawable.regalo, R.drawable.regalos, R.drawable.nadal, Color.parseColor("#B22222"));
 
     private static Tema destrc1 = new Tema(R.drawable.terra, R.drawable.jupiter, R.drawable.lluna, R.drawable.destrucio, Color.parseColor("#898937"));
-    private static Tema destrc2 = new Tema(R.drawable.terra, R.drawable.jupiter, R.drawable.lluna, R.drawable.destrucio, Color.parseColor("#4c5146"));
-    private static Tema destrc3 = new Tema(R.drawable.terra, R.drawable.jupiter, R.drawable.lluna, R.drawable.destrucio, Color.parseColor("#c0c052"));
+    private static Tema destrc2 = new Tema(R.drawable.jupiter, R.drawable.lluna, R.drawable.terra, R.drawable.destrucio, Color.parseColor("#4c5146"));
+    private static Tema destrc3 = new Tema(R.drawable.lluna, R.drawable.terra, R.drawable.jupiter, R.drawable.destrucio, Color.parseColor("#c0c052"));
 
     private static Tema hallo1 = new Tema(R.drawable.globoocular, R.drawable.telarana, R.drawable.calabaza, R.drawable.hallo, Color.parseColor("#FF8C00"));
     private static Tema hallo2 = new Tema(R.drawable.calabaza, R.drawable.globoocular, R.drawable.telarana, R.drawable.hallo, Color.parseColor("#8B0000"));
