@@ -3,6 +3,7 @@ package com.example.moonword;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -56,6 +57,8 @@ public class Tema {
         app.findViewById(R.id.buttonSend).setBackground(app.getDrawable(this.bgSend));
         ((ImageView)app.findViewById(R.id.lluna)).setImageResource(bgLletres);
         app.findViewById(R.id.parentConstraint).setBackground(app.getDrawable(this.bgFons));
+
+        Log.d("TEMA", "tema aplicat");
     }
 
     public @ColorInt int getColor(){
