@@ -95,6 +95,14 @@ public class MainActivity extends AppCompatActivity {
         textViewIntent = findViewById(R.id.textViewIntent);
         textCont = findViewById(R.id.TextViewContador);
         bonusButton = findViewById(R.id.bonusButton);
+        bonusButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                afegirBonus(777);
+                return true;
+            }
+        });
+
 
         nextTheme();
         startGame();
@@ -348,6 +356,9 @@ public class MainActivity extends AppCompatActivity {
             currentGame.setContadorBonus(currentGame.getContadorBonus()-5);
             bonusButton.setText(String.valueOf(currentGame.getContadorBonus()));
             mostraPrimeraLletraAleatori();
+            if(!currentGame.bonusDisponible()){
+                findViewById(R.id.ajudaButton).setEnabled(false);
+            }
 
         }else{
             mostrarMissatge("NECESSITES ALMENYS 5 BONUS", false);
@@ -356,12 +367,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void mostraPrimeraLletraAleatori(){
-        List<String> keyList = new ArrayList<>(currentGame.getMapWordsSol().keySet());
+        int pos = currentGame.getParaulaPosAjuda();
+        Iterator<String> paraules = currentGame.getMapWordsSol().keySet().iterator();
+        for (int i = 1; i < pos; i++) {
+            paraules.next();
+        }
+        String p = paraules.next();
 
-        Random random = new Random();
-        int pos = random.nextInt(keyList.size());
-
-        mostraPrimeraLletra(keyList.get(pos),pos);
+        mostraPrimeraLletra(p,pos);
     }
 
     //-----------------------------------------------BONUS-----------------------------------------------------------------
@@ -418,9 +431,7 @@ public class MainActivity extends AppCompatActivity {
                     mostraParaula(p,pos);
                     Log.d("GAMELOOP", "p: " + p + "  pos: "+pos);
                 }else{
-
-                    currentGame.setContadorBonus(currentGame.getContadorBonus() + 1);
-                    bonusButton.setText(String.valueOf(currentGame.getContadorBonus()));
+                    afegirBonus(1);
                 }
 
             }else{
@@ -436,7 +447,13 @@ public class MainActivity extends AppCompatActivity {
         textCont.setText(Html.fromHtml(imprimir, Html.FROM_HTML_MODE_LEGACY));
     }
 
-private StringBuilder generaText(boolean conte, String p){
+    private void afegirBonus(int n) {
+        currentGame.setContadorBonus(currentGame.getContadorBonus() + n);
+        bonusButton.setText(String.valueOf(currentGame.getContadorBonus()));
+    }
+
+
+    private StringBuilder generaText(boolean conte, String p){
         StringBuilder text = new StringBuilder();
 
         Iterator<String> iterator = currentGame.getSetFoundWords().iterator();

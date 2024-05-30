@@ -1,7 +1,5 @@
 package com.example.moonword;
 
-import android.util.Log;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,10 +31,12 @@ public class Game {
     //map Char -> Integer | Lletra -> nº aparicions
     private HashMap<Character, Integer> mapChars = new HashMap<>();
 
+    private HashSet<Integer> setParaulesBonus;
+
 //numTotalW cantidad de paraules que es poden escriure amb les lletres seleccionades
 //contadorBonus catidad de punts bonus acumulats
 //numTotalW cantidad de paraules encertades
-    private int tamLLetraMax, currentParaulesN, numTotalW, contadorBonus, contadorCorrecte;
+    private int tamLLetraMax, currentParaulesN, numTotalW, contadorBonus, paraulesSenseBonusN, contadorCorrecte;
 
 
     //*******************************GETTERS SETTERS************************************************
@@ -154,7 +154,6 @@ public class Game {
                 String found = iterFind.next(); //comprobar no coger la misma
                 if(valores.contains(i)){
                     //Log.d("GAME_INIT", "Paraula solució " + found);
-                    //this.mapWordsSol.put(found, paraluesRestants);
                     auxSet.add(found);
                     paraluesRestants--;
                     acumulat--;
@@ -162,18 +161,23 @@ public class Game {
                 }
                 i++;
             }
-            if(checkSize>=3){
-                checkSize--;
-                acumulat++;
-            }
+            checkSize--;
+            acumulat++;
         }
+        this.setParaulesBonus = new HashSet<>();
+
         this.currentParaulesN = 5-paraluesRestants;
+        this.paraulesSenseBonusN = this.currentParaulesN;
+
         Iterator<String> auxSetIter = auxSet.iterator();
         for(int j=0;j<currentParaulesN;j++){
             this.mapWordsSol.put(auxSetIter.next(),j);
+            this.setParaulesBonus.add(j);
         }
-        //Log.d("GAME_INIT", "mapSolucions" + this.mapWordsSol+ " "+this.currentParaulesN);
 
+
+
+        //Log.d("GAME_INIT", "mapSolucions" + this.mapWordsSol+ " "+this.currentParaulesN);
 
     }
     private Set<Integer> setNAleatorios(int n, int max){
@@ -213,19 +217,6 @@ public class Game {
     public boolean conteParaulesAmagades(String p){
         return this.mapWordsSol.containsKey(p);
     }
-    /**public boolean conteParaulesAmagades(String p){
-        Iterator<Map.Entry<String, Integer>> iterator = mapWordsSol.entrySet().iterator();
-
-        while (iterator.hasNext()) {
-            Map.Entry<String, Integer> entry = iterator.next();
-            String key = entry.getKey();
-
-            if (key.equals(p)) {
-                return true;
-            }
-        }
-        return false;
-    }**/
     /**
      * Mira si maWordsSol mapping amb totes les paraules possibles amb les lletres d'aquesta partida
      * */
@@ -248,6 +239,26 @@ public class Game {
         return this.currentParaulesN==0;
     }
 
+    public int getParaulaPosAjuda(){
+        if(this.setParaulesBonus.isEmpty()){
+            return -1;
+        }
+        Iterator<Integer> posSenseBonus = this.setParaulesBonus.iterator();
+        int r = random.nextInt(this.paraulesSenseBonusN);
+        for (int i = 1; i < r; i++) {
+            posSenseBonus.next();
+        }
+
+        int pos = posSenseBonus.next();
+        this.setParaulesBonus.remove(pos);
+        this.paraulesSenseBonusN--;
+        return pos;
+    }
+
+    public boolean bonusDisponible(){
+        return !this.setParaulesBonus.isEmpty();
+    }
+
     /**
      * Retorna la posició de una paraula oculta, després o elimina i decrementa les paraules restants
      * @param w
@@ -255,6 +266,11 @@ public class Game {
      */
     public int foundHidden(String w){
         this.currentParaulesN--;
+        //una paraula encertada no ha de ser usada com a bonus
+        //decrementar paraules sense bonus si no tenia bonus
+        if(this.setParaulesBonus.remove(this.mapWordsSol.get(w))){
+            this.paraulesSenseBonusN--;
+        }
         return this.mapWordsSol.remove(w);
     }
 
