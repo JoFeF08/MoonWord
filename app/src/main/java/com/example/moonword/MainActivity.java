@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         int interficie = View.SYSTEM_UI_FLAG_IMMERSIVE;
         decorView.setSystemUiVisibility(interficie);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Verificar si todos los permisos están concedidos
         if (!PermissionUtils.arePermissionsGranted(this, permissions)) {
@@ -183,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void mostraLletraPosicio ( String s , int posicio, int n_lletra, boolean majuscula){
         TextView[] panells = hiddenWords[posicio];
-
+        Log.i("MOSTRAR BONUS", s+", pos"+ posicio+", n_lletra: "+n_lletra);
         char lletra;
         if (majuscula){
             lletra= s.toUpperCase().charAt(n_lletra);
@@ -386,12 +388,13 @@ public class MainActivity extends AppCompatActivity {
     private void mostraPrimeraLletraAleatori(){
         int pos = currentGame.getParaulaPosAjuda();
         Iterator<String> paraules = currentGame.getMapWordsSol().keySet().iterator();
-        for (int i = 1; i < pos; i++) {
-            paraules.next();
+        String paraula = paraules.next();
+        while(currentGame.getMapWordsSol().get(paraula)!= pos){
+            paraula = paraules.next();
         }
-        String p = paraules.next();
 
-        mostraPrimeraLletra(p,pos, false);
+
+        mostraPrimeraLletra(paraula,pos, false);
     }
 
     //-----------------------------------------------BONUS-----------------------------------------------------------------

@@ -1,5 +1,7 @@
 package com.example.moonword;
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -94,9 +96,10 @@ public class Game {
 
         //obtenir paraula aleatoria tamany
         Set<String> paraulesMax = DictReader.getMapNumWords().get(tamLletraMax);
-        int tamSet = paraulesMax.size();
+        int tamSet = DictReader.getSizeNumWords(tamLletraMax);
         int sel = random.nextInt(tamSet);
         Iterator<String> iter = paraulesMax.iterator();
+        Log.d("GAME_INIT", "selRandom: "+sel+", size:" +paraulesMax.size()+",  tamSet:"+tamSet+", l:"+tamLletraMax);
         for(int i=0;i<sel-1;i++){
             iter.next();
         }
@@ -109,14 +112,18 @@ public class Game {
         setFoundWords = new TreeSet<>();
         mapNumSol = new HashMap<>();
         mapWordsSol = new TreeMap<>(new StringLengthComparator());
+        TreeMap<Integer, Integer> contadorsMapNumSol = new TreeMap<>();
 
         System.out.println("setChars="+ mapChars);
 
         //emplenar totes les paraules posibles
         numTotalW = 0;
+
         for (int i = 3; i <= pSel.length(); i++) {
             HashSet<String> aux = new HashSet<>();
             HashSet<String> allW = DictReader.getMapNumWords().get(i);
+
+            int numNumSol = 0;
 
             //usa el iterator
             Iterator<String> iterAllW = allW.iterator();
@@ -126,11 +133,13 @@ public class Game {
                     if(aux.add(s)) {
                         //Calcular nombre de paraules possibles amb les lletres
                         numTotalW++;
+                        numNumSol++;
                     }
                 }
             }
             System.out.println(aux);
             mapNumSol.put(i, aux);
+            contadorsMapNumSol.put(i, numNumSol);
         }
 
         //Triar les 5 paraules solució
@@ -147,8 +156,8 @@ public class Game {
                 acumulat++;
                 continue;
             }
-            //int rPos = random.nextInt(aux.size())-1;
-            Set<Integer> valores = setNAleatorios(acumulat, aux.size());
+
+            Set<Integer> valores = setNAleatorios(acumulat, contadorsMapNumSol.get(checkSize));
             //Log.d("SEL_LOOP", "valores: "+valores);
             Iterator<String> iterFind = aux.iterator();
             int i = 0;
@@ -255,6 +264,7 @@ public class Game {
             return -1;
         }
         Iterator<Integer> posSenseBonus = this.setParaulesBonus.iterator();
+        Log.i("PARAULA_BONUS", "paraules sense bonus: "+this.setParaulesBonus);
         int r = random.nextInt(this.paraulesSenseBonusN);
         for (int i = 1; i < r; i++) {
             posSenseBonus.next();
@@ -263,6 +273,8 @@ public class Game {
         int pos = posSenseBonus.next();
         this.setParaulesBonus.remove(pos);
         this.paraulesSenseBonusN--;
+        Log.i("PARAULA_BONUS", "paraula pos a bonusear "+pos);
+
         return pos;
     }
 

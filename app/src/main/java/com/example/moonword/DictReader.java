@@ -20,7 +20,10 @@ public class DictReader {
     private static BufferedReader reader;
 
     private static final TreeMap<Integer, HashSet<String>> mapNumWords= new TreeMap<>();
+
+    private static final TreeMap<Integer, Integer> sizeNumWords = new TreeMap<>();
     private static final HashMap<String, String>  mapAllWords = new HashMap<>();
+    private static int sizeAllWords = 0;
 
     /**
      *
@@ -44,12 +47,16 @@ public class DictReader {
                 continue;
             }
             mapAllWords.put(words[1], words[0]);
+            sizeAllWords++;
 
             if(mapNumWords.get(len)==null){
                 HashSet<String> aux = new HashSet<>();
                 mapNumWords.put(len, aux);
+                sizeNumWords.put(len, 0);
             }
-            mapNumWords.get(len).add(words[1]);
+            if(mapNumWords.get(len).add(words[1])) {
+                sizeNumWords.put(len, sizeNumWords.get(len) + 1);
+            }
             //System.out.println("añadido "+words[1]+" en "+len);
 
         }
@@ -69,4 +76,11 @@ public class DictReader {
         return DictReader.mapAllWords.get(p);
     }
 
+    public static int getSizeAllWords(){
+        return sizeAllWords;
+    }
+
+    public static int getSizeNumWords(int tam){
+        return sizeNumWords.get(tam);
+    }
 }
