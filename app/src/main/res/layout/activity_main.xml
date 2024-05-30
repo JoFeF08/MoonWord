@@ -413,4 +413,15 @@
         app:layout_constraintTop_toTopOf="@+id/ref15H"
         app:layout_constraintVertical_bias="0.0"/>
 
+    <Button
+        android:id="@+id/fotoButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/ic_menu_camera"
+        android:onClick="tomarFoto"
+        app:layout_constraintBottom_toTopOf="@+id/bonusButton"
+        app:layout_constraintEnd_toStartOf="@+id/lluna"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shuffleButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

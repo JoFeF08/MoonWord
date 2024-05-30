@@ -1,6 +1,7 @@
 package com.example.moonword;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -11,10 +12,15 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -40,6 +46,7 @@ import java.util.TreeSet;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CAMERA_PERMISSION = 200;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int PERMISSIONS_REQUEST_CODE = 200;
     private String[] permissions = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -182,9 +189,9 @@ public class MainActivity extends AppCompatActivity {
 
         char lletra;
         if (majuscula){
-            lletra= s.toUpperCase().charAt(n_lletra);
+            lletra= s.toUpperCase().charAt(posicio);
         } else{
-            lletra= s.toLowerCase().charAt(n_lletra);
+            lletra= s.toLowerCase().charAt(posicio);
         }
 
         panells[n_lletra].setText(""+lletra);
@@ -525,6 +532,32 @@ public class MainActivity extends AppCompatActivity {
             b.setEnabled(!b.getText().equals(""));
         }
         textViewIntent.setText("");
+    }
+
+    //------------------------------------------------------------------CAMARA------------------------------
+    public void tomarFoto(View v){
+        Log.d("TOMAR_FOTO()", "pulsat");
+        checkCameraPermission();
+        Intent fotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(fotoIntent.resolveActivity(getPackageManager()) != null){
+            startActivityForResult(fotoIntent, REQUEST_IMAGE_CAPTURE);
+        }else{
+            Log.w("TOMAR_FOTO()", "no se ha podido lanzar intent");
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            Drawable drawable = new BitmapDrawable(getResources(), imageBitmap);
+            findViewById(R.id.parentConstraint).setBackground(drawable);
+            Log.d("TOMAR_FOTO()", "actualizado");
+        }else{
+            Log.w("TOMAR_FOTO()", "no se ha podido tomar la foto");
+        }
     }
 
     //------------------------------------------------------------------PERMISOS---------------------------------------------
