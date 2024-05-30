@@ -298,13 +298,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void inicialitzaBotonsiContadors(){
         currentGame.setContadorCorrecte(0);
-
-        currentGame.setContadorBonus(0);
-        bonusButton.setText("0");
-
         actulaitzarTextContador(null);
-
         clearIntento();
+        enableViews(R.id.parentConstraint);
     }
 
 
