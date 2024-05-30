@@ -173,14 +173,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void mostraPrimeraLletra( String s , int posicio ){
-        mostraLletraPosicio(s,posicio,0);
+    private void mostraPrimeraLletra( String s , int posicio, boolean majuscula){
+        mostraLletraPosicio(s,posicio,0, majuscula);
     }
 
-    private void mostraLletraPosicio ( String s , int posicio, int n_lletra){
+    private void mostraLletraPosicio ( String s , int posicio, int n_lletra, boolean majuscula){
         TextView[] panells = hiddenWords[posicio];
-        char[] lletres = s.toUpperCase().toCharArray();
-        panells[n_lletra].setText(""+lletres[n_lletra]);
+
+        char lletra;
+        if (majuscula){
+            lletra= s.toUpperCase().charAt(n_lletra);
+        } else{
+            lletra= s.toLowerCase().charAt(n_lletra);
+        }
+
+        panells[n_lletra].setText(""+lletra);
     }
 
 
@@ -246,7 +253,15 @@ public class MainActivity extends AppCompatActivity {
      * Inicialitza el joc
      */
     private void startGame(){
-        this.currentGame = new Game(Game.random.nextInt(4)+4);
+        int carryBonus;
+        if (this.currentGame == null){
+            carryBonus=0;
+        }else{
+            carryBonus = this.currentGame.getContadorBonus();
+        }
+        this.currentGame = new Game(Game.random.nextInt(4)+4); //entre 7 y 3
+        this.currentGame.setContadorBonus(carryBonus);
+
         Log.i("START_GAME()", currentGame.toString());
 
         num_boto = 0;
@@ -374,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
         }
         String p = paraules.next();
 
-        mostraPrimeraLletra(p,pos);
+        mostraPrimeraLletra(p,pos, false);
     }
 
     //-----------------------------------------------BONUS-----------------------------------------------------------------
@@ -406,6 +421,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(currentGame.hasWon()){
             Log.i("GAMELOOP", "HAS GUANYAT");
+            mostrarMissatge("Enhorabona! Has guanyat", true);
+
             disableViews(R.id.parentConstraint);
 
         }
@@ -421,7 +438,7 @@ public class MainActivity extends AppCompatActivity {
                 mostrarMissatge("Aquesta ja la tens", false);
 
             } else if (currentGame.conteParaulesPossibles(p)){
-                mostrarMissatge("Paraula vàlida!", false);
+                String missatge = "Paraula vàlida!";
 
                 currentGame.getSetFoundWords().add(p);
                 currentGame.setContadorCorrecte(currentGame.getContadorCorrecte()+1);
@@ -432,7 +449,10 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("GAMELOOP", "p: " + p + "  pos: "+pos);
                 }else{
                     afegirBonus(1);
+                    missatge += " Tens un bonus";
                 }
+                mostrarMissatge(missatge, false);
+
 
             }else{
                 mostrarMissatge("Paraula NO vàlida", false);
@@ -483,6 +503,9 @@ public class MainActivity extends AppCompatActivity {
         TextView[] panells = hiddenWords[posicio];
         char[] lletres = DictReader.getParaulaAccent(s).toUpperCase().toCharArray();
         for (int i = 0; i < s.length() && i<hiddenWords[posicio].length; i++) {
+            if(!panells[i].getText().toString().isEmpty()){
+                continue;
+            }
             panells[i].setText(""+lletres[i]);
         }
     }
