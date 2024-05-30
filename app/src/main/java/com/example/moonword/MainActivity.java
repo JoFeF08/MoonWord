@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
             lletra= s.toLowerCase().charAt(n_lletra);
         }
 
-        panells[posicio].setText(""+lletra);
+        panells[n_lletra].setText(""+lletra);
     }
 
 
