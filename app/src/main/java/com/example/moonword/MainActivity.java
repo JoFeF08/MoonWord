@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setTextSize(52);
             textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             textView.setBackgroundColor(currentTema.getColor());
+            textView.setTextColor(currentTema.getColorLletra());
             layout.addView(textView); //2
 
             ConstraintSet constraintSet = new ConstraintSet();
@@ -226,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void nextTheme(){
         currentTema = Tema.getRandomTema();
-        currentTema.applyTema(this);
+        currentTema.applyTema(this, charButtons);
     }
 
     private void getCharButtons(){
