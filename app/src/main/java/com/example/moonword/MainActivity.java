@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         }
         checkCameraPermission();
 
-
+        //configura el diccionari
         DictReader.configure(this);
         try {
             DictReader.loadAll();
@@ -106,26 +106,43 @@ public class MainActivity extends AppCompatActivity {
         textViewIntent = findViewById(R.id.textViewIntent);
         textCont = findViewById(R.id.TextViewContador);
         bonusButton = findViewById(R.id.bonusButton);
-        bonusButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                afegirBonus(777);
-                return true;
-            }
+
+        //ajuda per debug
+        bonusButton.setOnLongClickListener(v -> {
+            afegirBonus(777);
+            return true;
         });
 
-        findViewById(R.id.fotoButton).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                currentTema = Tema.getEasterTema();
-                currentTema.applyTema(self, charButtons);
-                if(mediaPlayer == null || !mediaPlayer.isPlaying()){
-                    mediaPlayer = MediaPlayer.create(v.getContext(), R.raw.rickrollhq);
-                    mediaPlayer.setLooping(true);
-                    mediaPlayer.start();
-                }
-                return true;
+        //(✿◠‿◠)
+        findViewById(R.id.fotoButton).setOnLongClickListener(v -> {
+            currentTema = Tema.getEasterTema();
+            currentTema.applyTema(self, charButtons);
+            if(mediaPlayer == null || !mediaPlayer.isPlaying()){
+                mediaPlayer = MediaPlayer.create(v.getContext(), R.raw.rickrollhq);
+                mediaPlayer.setLooping(true);
+                mediaPlayer.start();
+                mostrarMissatge("GET RICKROLL'D", true);
+                Log.i("EASTEREGG", "GET RICKROLL'D");
             }
+            return true;
+        });
+
+        //per si no saps quina es la solució i no tens la consola a ma
+        findViewById(R.id.ajudaButton).setOnLongClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            String message = "DIRTY CHEATER!!!";
+            builder.setTitle(message);
+
+            builder.setMessage(currentGame.toString());
+
+            // Un botó OK per tancar la finestra
+            builder.setPositiveButton(" OK... ",null);
+
+            // Mostrar l ’ AlertDialog a la pantalla
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            return true;
         });
 
         nextTheme();
@@ -168,11 +185,13 @@ public class MainActivity extends AppCompatActivity {
             TextView textView = new TextView(this); //1
             textView.setId(View.generateViewId()); // Generar ID único para el TextView
             int id = textView.getId();
+
             textView.setText("");
             textView.setTextSize(52);
             textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             textView.setBackgroundColor(currentTema.getColor());
             textView.setTextColor(currentTema.getColorLletra());
+
             layout.addView(textView); //2
 
             ConstraintSet constraintSet = new ConstraintSet();
@@ -197,7 +216,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * mostra la primera lletra de la paraula s a posicio posicio
+     * @param s
+     * @param posicio
+     * @param majuscula
+     */
     private void mostraPrimeraLletra( String s , int posicio, boolean majuscula){
         mostraLletraPosicio(s,posicio,0, majuscula);
     }
@@ -243,6 +267,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * carrega el proxim tema aleatori
+     */
     private void nextTheme(){
         currentTema = Tema.getRandomTema();
         currentTema.applyTema(this, charButtons);
@@ -392,20 +419,22 @@ public class MainActivity extends AppCompatActivity {
     public void btnHint(View v){
         System.out.println("D: pulsado ayuda");
 
+        if(currentGame.bonusDisponible()) {
+            if (currentGame.getContadorBonus() >= 5) {
+                mostrarMissatge("AJUDA", false);
+                currentGame.setContadorBonus(currentGame.getContadorBonus() - 5);
+                bonusButton.setText(String.valueOf(currentGame.getContadorBonus()));
+                mostraPrimeraLletraAleatori();
+                /*if(!currentGame.bonusDisponible()){
+                    findViewById(R.id.ajudaButton).setEnabled(false);
+                }*/
 
-        if(currentGame.getContadorBonus() >= 5){
-            mostrarMissatge("AJUDA", false);
-            currentGame.setContadorBonus(currentGame.getContadorBonus()-5);
-            bonusButton.setText(String.valueOf(currentGame.getContadorBonus()));
-            mostraPrimeraLletraAleatori();
-            if(!currentGame.bonusDisponible()){
-                findViewById(R.id.ajudaButton).setEnabled(false);
+            } else {
+                mostrarMissatge("NECESSITES ALMENYS 5 BONUS", false);
             }
-
         }else{
-            mostrarMissatge("NECESSITES ALMENYS 5 BONUS", false);
+            mostrarMissatge("No hi ha més bonus", false);
         }
-
     }
 
     private void mostraPrimeraLletraAleatori(){
