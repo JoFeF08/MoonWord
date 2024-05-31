@@ -34,6 +34,7 @@ public class Tema {
 
     private static Tema rickTema = new Tema(R.drawable.rickface, R.drawable.rickface, R.drawable.rickface, R.drawable.rickroll, Color.parseColor("#4DD0E1"), Color.parseColor("#FFFFFF"));
 
+    private static Tema gigaTema = new Tema(R.drawable.terra, R.drawable.jupiter, R.drawable.giga, R.drawable.destrucio, Color.parseColor("#4DD0E1"), Color.parseColor("#FFFFFF"));
     private static Tema[] temas = {tema1, tema2, tema3, nadal1, nadal2, nadal3, destrc1,destrc2,destrc3, hallo1, hallo2,hallo3};
     private @DrawableRes int bgSend, bgCrear, bgLletres, bgFons;
     private @ColorInt int color, colorLletra;
@@ -72,6 +73,10 @@ public class Tema {
 
     public static Tema getEasterTema(){
         return rickTema;
+    }
+
+    public static Tema getGigaTema(){
+        return gigaTema;
     }
 
     public @ColorInt int getColor(){

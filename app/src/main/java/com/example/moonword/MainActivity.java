@@ -115,14 +115,20 @@ public class MainActivity extends AppCompatActivity {
 
         //(✿◠‿◠)
         findViewById(R.id.fotoButton).setOnLongClickListener(v -> {
-            currentTema = Tema.getEasterTema();
-            currentTema.applyTema(self, charButtons);
-            if(mediaPlayer == null || !mediaPlayer.isPlaying()){
-                mediaPlayer = MediaPlayer.create(v.getContext(), R.raw.rickrollhq);
-                mediaPlayer.setLooping(true);
-                mediaPlayer.start();
-                mostrarMissatge("GET RICKROLL'D", true);
-                Log.i("EASTEREGG", "GET RICKROLL'D");
+            Random r = new Random();
+            if(r.nextInt(1000)==0){
+                currentTema = Tema.getGigaTema();
+                currentTema.applyTema(self, charButtons);
+            }else{
+                currentTema = Tema.getEasterTema();
+                currentTema.applyTema(self, charButtons);
+                if(mediaPlayer == null || !mediaPlayer.isPlaying()){
+                    mediaPlayer = MediaPlayer.create(v.getContext(), R.raw.rickrollhq);
+                    mediaPlayer.setLooping(true);
+                    mediaPlayer.start();
+                    mostrarMissatge("GET RICKROLL'D", true);
+                    Log.i("EASTEREGG", "GET RICKROLL'D");
+                }
             }
             return true;
         });
