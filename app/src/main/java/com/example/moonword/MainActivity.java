@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewIntent;
     private Button bonusButton ;
     private TextView textCont;
-    private  int num_boto;
+    private int num_boto;
 
     private String imprimir;
 
@@ -68,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Game currentGame;
     private Tema currentTema;
+
+    private final MainActivity self = this; //només per al easteregg
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +110,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View v) {
                 afegirBonus(777);
+                return true;
+            }
+        });
+
+        findViewById(R.id.fotoButton).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                currentTema = Tema.getEasterTema();
+                currentTema.applyTema(self, charButtons);
+                if(mediaPlayer == null || !mediaPlayer.isPlaying()){
+                    mediaPlayer = MediaPlayer.create(v.getContext(), R.raw.rickrollhq);
+                    mediaPlayer.setLooping(true);
+                    mediaPlayer.start();
+                }
                 return true;
             }
         });
@@ -316,6 +334,10 @@ public class MainActivity extends AppCompatActivity {
         Iterator<String> iterSols = currentGame.getMapWordsSol().keySet().iterator();
         for (int i = 0; i < hiddenWords.length && i<currentGame.getCurrentParaulesN(); i++) {
             hiddenWords[i]=crearFilaTextViews(R.id.ref15H, iterSols.next().length(), i);
+        }
+
+        if(mediaPlayer!=null){
+            mediaPlayer.stop();
         }
 
     }

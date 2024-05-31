@@ -31,6 +31,9 @@ public class Tema {
     private static Tema hallo1 = new Tema(R.drawable.globoocular, R.drawable.telarana, R.drawable.calabaza, R.drawable.hallo, Color.parseColor("#FF8C00"), Color.parseColor("#000000"));
     private static Tema hallo2 = new Tema(R.drawable.calabaza, R.drawable.globoocular, R.drawable.lluna, R.drawable.hallo, Color.parseColor("#8B0000"), Color.parseColor("#000000"));
     private static Tema hallo3 = new Tema(R.drawable.telarana, R.drawable.calabaza, R.drawable.globoocular, R.drawable.hallo, Color.parseColor("#F8F8FF"), Color.parseColor("#000000"));
+
+    private static Tema rickTema = new Tema(R.drawable.rickface, R.drawable.rickface, R.drawable.rickface, R.drawable.rickroll, Color.parseColor("#4DD0E1"), Color.parseColor("#FFFFFF"));
+
     private static Tema[] temas = {tema1, tema2, tema3, nadal1, nadal2, nadal3, destrc1,destrc2,destrc3, hallo1, hallo2,hallo3};
     private @DrawableRes int bgSend, bgCrear, bgLletres, bgFons;
     private @ColorInt int color, colorLletra;
@@ -55,7 +58,9 @@ public class Tema {
      */
     public void applyTema(AppCompatActivity app, Button[] charButtons){
         app.findViewById(R.id.buttonClear).setBackground(app.getDrawable(this.bgCrear));
+        ((Button)app.findViewById(R.id.buttonClear)).setTextColor(this.colorLletra);
         app.findViewById(R.id.buttonSend).setBackground(app.getDrawable(this.bgSend));
+        ((Button)app.findViewById(R.id.buttonSend)).setTextColor(this.colorLletra);
         ((ImageView)app.findViewById(R.id.lluna)).setImageResource(bgLletres);
         app.findViewById(R.id.parentConstraint).setBackground(app.getDrawable(this.bgFons));
         for(Button btn:charButtons){
@@ -63,6 +68,10 @@ public class Tema {
         }
 
         Log.d("TEMA", "tema aplicat");
+    }
+
+    public static Tema getEasterTema(){
+        return rickTema;
     }
 
     public @ColorInt int getColor(){
